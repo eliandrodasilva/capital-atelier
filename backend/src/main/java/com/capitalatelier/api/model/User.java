@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.br.CPF;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,12 +32,6 @@ public class User {
     @NotBlank(message = "A senha não pode ser vazia!")
     @Size(min = 6, max = 100, message = "A senha deve ter entre 6 e 100 caracteres!")
     private String encryptedPassword;
-
-    @CPF(message = "O CPF é inválido!")
-    @NotBlank(message = "O CPF não pode ser vazio!")
-    private String cpf;
-
-    private String avatarUrl;
 
     @CreationTimestamp
     private LocalDate createdAt;
