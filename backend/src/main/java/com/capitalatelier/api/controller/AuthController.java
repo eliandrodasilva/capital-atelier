@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin()
 public class AuthController {
 
     private final AuthService authService;
@@ -26,5 +27,21 @@ public class AuthController {
         LoginResponseDTO response = authService.login(dto);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(
+            @Valid @RequestBody com.capitalatelier.api.dto.ForgotPasswordRequestDTO dto) {
+
+        authService.sendPasswordResetEmail(dto.email());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody com.capitalatelier.api.dto.ResetPasswordRequestDTO dto) {
+
+        authService.resetPassword(dto.token(), dto.newPassword());
+        return ResponseEntity.ok().build();
     }
 }
