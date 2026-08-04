@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Rocket, ArrowRight, Wallet, Mail, Lock } from "lucide-react";
+import { Rocket, ArrowRight, Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/services/AuthService";
 
@@ -16,6 +16,7 @@ const LoginPage = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -107,12 +108,20 @@ const LoginPage = () => {
                 <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={credentials.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="pl-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
+                  className="pl-10 pr-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-zinc-600 hover:text-zinc-400 cursor-pointer"
+                >
+                  {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 

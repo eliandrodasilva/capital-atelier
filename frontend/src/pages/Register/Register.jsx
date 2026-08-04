@@ -9,8 +9,8 @@ import {
   User,
   Mail,
   Lock,
+  Eye,
   EyeOff,
-  Dock,
 } from "lucide-react";
 import UserService from "@/services/UserService";
 import { Link } from "react-router-dom";
@@ -25,6 +25,8 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -141,14 +143,20 @@ const RegisterPage = () => {
                 <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={user.password}
                   onChange={handleChange}
                   placeholder="Crie uma senha forte"
-                  className="pl-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
+                  className="pl-10 pr-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
                 />
 
-                <EyeOff className="absolute right-3 top-3 w-4 h-4 text-zinc-600" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-zinc-600 hover:text-zinc-400 cursor-pointer"
+                >
+                  {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
@@ -163,12 +171,20 @@ const RegisterPage = () => {
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={user.confirmPassword}
                   onChange={handleChange}
                   placeholder="Repita a senha"
-                  className="pl-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
+                  className="pl-10 pr-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-3 text-zinc-600 hover:text-zinc-400 cursor-pointer"
+                >
+                  {showConfirmPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
