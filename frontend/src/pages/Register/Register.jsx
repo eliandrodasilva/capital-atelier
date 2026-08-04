@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import UserService from "@/services/UserService";
 import { Link } from "react-router-dom";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter/PasswordStrengthMeter";
 
 const userService = new UserService();
 
@@ -158,6 +159,8 @@ const RegisterPage = () => {
                   {showPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </button>
               </div>
+
+              <PasswordStrengthMeter password={user.password} />
             </div>
 
             <div className="space-y-2">
