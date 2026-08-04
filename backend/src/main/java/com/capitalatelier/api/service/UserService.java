@@ -20,6 +20,10 @@ public class UserService {
     private MailSenderService mailSenderService;
 
     public UserResponseDTO createUser(CreateUserDTO dto) {
+        if (repository.findByEmail(dto.email()).isPresent()) {
+            throw new RuntimeException("E-mail já cadastrado");
+        }
+
         User user = new User();
 
         user.setUsername(dto.username());

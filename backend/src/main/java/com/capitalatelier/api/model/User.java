@@ -27,6 +27,7 @@ public class User {
 
     @NotBlank(message = "O email não pode ser vazio!")
     @Email(message = "O email é inválido!")
+    @jakarta.persistence.Column(unique = true)
     private String email;
 
     @NotBlank(message = "A senha não pode ser vazia!")
