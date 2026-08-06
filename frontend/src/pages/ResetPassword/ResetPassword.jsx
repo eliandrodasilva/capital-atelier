@@ -46,7 +46,7 @@ const ResetPasswordPage = () => {
       await authService.resetPassword(token, newPassword);
       setMessage("Senha redefinida com sucesso! Redirecionando para o login...");
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 2500);
     } catch (err) {
       setError(
@@ -138,7 +138,7 @@ const ResetPasswordPage = () => {
             </Button>
             
             <div className="pt-2 flex items-center justify-start">
-              <Link to="/" className="flex items-center text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+              <Link to="/login" className="flex items-center text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Voltar para Login
               </Link>

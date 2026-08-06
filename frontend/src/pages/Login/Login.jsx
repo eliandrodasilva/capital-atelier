@@ -41,7 +41,7 @@ const LoginPage = () => {
         localStorage.setItem("usuario", JSON.stringify(response.data));
       }
 
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(
         err?.response?.data?.message ||
