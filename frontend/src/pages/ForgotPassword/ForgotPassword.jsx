@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Wallet, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import AuthService from "@/services/AuthService";
+import AlertMessage from "@/components/ui/AlertMessage";
 
 const authService = new AuthService();
 
@@ -77,17 +78,8 @@ const ForgotPasswordPage = () => {
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-                {error}
-              </div>
-            )}
-
-            {message && (
-              <div className="rounded-md border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
-                {message}
-              </div>
-            )}
+            <AlertMessage message={error} variant="error" />
+            <AlertMessage message={message} variant="success" />
 
             <Button
               type="submit"

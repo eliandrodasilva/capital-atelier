@@ -15,6 +15,7 @@ import {
 import UserService from "@/services/UserService";
 import { Link } from "react-router-dom";
 import PasswordStrengthMeter from "@/components/PasswordStrengthMeter/PasswordStrengthMeter";
+import AlertMessage from "@/components/ui/AlertMessage";
 
 const userService = new UserService();
 
@@ -196,17 +197,8 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="rounded-md border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
-                {success}
-              </div>
-            )}
+            <AlertMessage message={error} variant="error" />
+            <AlertMessage message={success} variant="success" />
 
             <Button
               type="submit"

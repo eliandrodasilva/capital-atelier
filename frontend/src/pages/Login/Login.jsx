@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Rocket, ArrowRight, Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import AuthService from "@/services/AuthService";
+import AlertMessage from "@/components/ui/AlertMessage";
 
 const authService = new AuthService();
 
@@ -131,11 +132,7 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-                {error}
-              </div>
-            )}
+            <AlertMessage message={error} variant="error" />
 
             <Button
               type="submit"
