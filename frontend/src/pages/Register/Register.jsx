@@ -177,6 +177,11 @@ const RegisterPage = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   value={user.confirmPassword}
                   onChange={handleChange}
+                  onBlur={() => {
+                    if (user.password !== user.confirmPassword) {
+                      setError("As senhas não conferem.");
+                    }
+                  }}
                   placeholder="Repita a senha"
                   className="pl-10 pr-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
                 />
@@ -232,7 +237,7 @@ const RegisterPage = () => {
           </p>
 
           <Button variant="outline" className="mt-6 px-8 cursor-pointer border-zinc-700 bg-zinc-900 hover:bg-zinc-800 hover:text-zinc-100 text-zinc-300 transition-all rounded-full">
-            <Link to="/">FAÇA LOGIN</Link>
+            <Link to="/login">FAÇA LOGIN</Link>
           </Button>
         </div>
         </div>

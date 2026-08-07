@@ -3,13 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Rocket, ArrowRight, Wallet, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import AuthService from "@/services/AuthService";
 
 const authService = new AuthService();
 
 const LoginPage = () => {
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("app-token");
+
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
 
   const [credentials, setCredentials] = useState({
     email: "",

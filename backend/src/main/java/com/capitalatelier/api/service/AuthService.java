@@ -57,7 +57,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("E-mail não encontrado"));
 
         String token = jwtService.generateToken(user);
-        String resetLink = "http://localhost:5173/reset-password?token=" + token;
+        String resetLink = "http://localhost:5173/reset-password/" + token;
 
         org.thymeleaf.context.Context context = new org.thymeleaf.context.Context();
         context.setVariable("name", user.getUsername());
