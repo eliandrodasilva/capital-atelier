@@ -2,7 +2,8 @@ import React from "react";
 import { 
   Wallet, 
   LayoutDashboard, 
-  Settings, 
+  Settings,
+  User, 
   LogOut 
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -49,6 +50,15 @@ const Sidebar = () => {
           <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3 block px-2">
             System
           </span>
+
+          <nav className="space-y-1">
+            <NavItem 
+              icon={<User />} 
+              label="Profile" 
+              active={location.pathname === "/profile"} 
+              onClick={() => navigate("/profile")} 
+            />
+          </nav>
           
           <nav className="space-y-1">
             <NavItem 
@@ -63,7 +73,7 @@ const Sidebar = () => {
       </div>
 
       <div className="border-t border-zinc-800/50 p-4">
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 cursor-pointer" onClick={() => navigate("/profile")}>
           <div className="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 flex-shrink-0 flex items-center justify-center overflow-hidden">
             <img 
               src={`https://api.dicebear.com/7.x/notionists/svg?seed=${usuario.username || 'User'}`} 

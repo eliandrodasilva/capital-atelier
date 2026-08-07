@@ -6,6 +6,7 @@ import ResetPasswordPage from "./pages/ResetPassword/ResetPassword";
 import DashboardPage from "./pages/Dashboard/Dashboard";
 import DashboardLayout from "./pages/DashboardLayout";
 import SettingsPage from "./pages/Settings/Settings";
+import ProfilePage from "./pages/Profile/Profile";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
