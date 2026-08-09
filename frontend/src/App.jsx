@@ -7,6 +7,7 @@ import DashboardPage from "./pages/Dashboard/Dashboard";
 import DashboardLayout from "./pages/DashboardLayout";
 import SettingsPage from "./pages/Settings/Settings";
 import ProfilePage from "./pages/Profile/Profile";
+import ChangePasswordPage from "./pages/Profile/ChangePassword";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/change-password" element={<ChangePasswordPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
