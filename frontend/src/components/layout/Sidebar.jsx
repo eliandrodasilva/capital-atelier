@@ -48,13 +48,13 @@ const Sidebar = () => {
 
         <div className="px-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3 block px-2">
-            System
+            Sistema
           </span>
 
           <nav className="space-y-1">
             <NavItem 
               icon={<User />} 
-              label="Profile" 
+              label="Perfil" 
               active={location.pathname === "/profile"} 
               onClick={() => navigate("/profile")} 
             />
@@ -63,7 +63,7 @@ const Sidebar = () => {
           <nav className="space-y-1">
             <NavItem 
               icon={<Settings />} 
-              label="Settings" 
+              label="Configurações" 
               active={location.pathname === "/settings"} 
               onClick={() => navigate("/settings")} 
             />
@@ -96,7 +96,7 @@ const Sidebar = () => {
           className="w-full flex items-center p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
         >
           <LogOut className="w-5 h-5 flex-shrink-0" />
-          <span className="ml-3 text-sm font-medium whitespace-nowrap">Log out</span>
+          <span className="ml-3 text-sm font-medium whitespace-nowrap">Sair</span>
         </button>
       </div>
 
