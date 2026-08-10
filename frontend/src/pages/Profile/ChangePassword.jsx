@@ -6,6 +6,7 @@ import { Lock, Eye, EyeOff, ArrowLeft, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import UserService from "@/services/UserService";
 import AlertMessage from "@/components/ui/AlertMessage";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter/PasswordStrengthMeter";
 
 const userService = new UserService();
 
@@ -139,6 +140,7 @@ const ChangePasswordPage = () => {
                 {showNewPassword ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
               </button>
             </div>
+            <PasswordStrengthMeter password={newPassword} />
           </div>
 
           <div className="space-y-2">
