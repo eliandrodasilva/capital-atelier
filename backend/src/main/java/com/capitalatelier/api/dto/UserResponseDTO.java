@@ -1,11 +1,11 @@
 package com.capitalatelier.api.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record UserResponseDTO(
     Long id,
     String username,
     String email,
-    LocalDate createdAt,
-    LocalDate updatedAt
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {}

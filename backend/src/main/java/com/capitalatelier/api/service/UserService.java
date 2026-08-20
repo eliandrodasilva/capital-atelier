@@ -1,7 +1,7 @@
 package com.capitalatelier.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -11,6 +11,7 @@ import com.capitalatelier.api.dto.UpdateUserDTO;
 import com.capitalatelier.api.dto.UserResponseDTO;
 import com.capitalatelier.api.model.User;
 import com.capitalatelier.api.repository.UserRepository;
+import com.capitalatelier.api.util.SecurityUtils;
 
 @Service
 public class UserService {
@@ -21,64 +22,59 @@ public class UserService {
     @Autowired
     private MailSenderService mailSenderService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SecurityUtils securityUtils;
+
     public UserResponseDTO createUser(CreateUserDTO dto) {
         if (repository.findByEmail(dto.email()).isPresent()) {
-            throw new RuntimeException("E-mail já cadastrado");
+            throw new RuntimeException("Email já cadastrado");
         }
 
         User user = new User();
-
         user.setUsername(dto.username());
         user.setEmail(dto.email());
-        user.setEncryptedPassword(new BCryptPasswordEncoder().encode(dto.password()));
+        user.setEncryptedPassword(passwordEncoder.encode(dto.password()));
 
         User savedUser = repository.save(user);
 
         Context context = new Context();
-        
-        context.setVariable("name", user.getUsername());
-        context.setVariable("email", user.getEmail());
-        context.setVariable("createdAt", user.getCreatedAt());
-        context.setVariable("updatedAt", user.getUpdatedAt());
-        
-        mailSenderService.sendWelcomeMail(user.getEmail(), "Bem-vindo ao Capital Atelier", "newSignUp", context);
+        context.setVariable("name", savedUser.getUsername());
+        context.setVariable("email", savedUser.getEmail());
+        context.setVariable("createdAt", savedUser.getCreatedAt());
+        context.setVariable("updatedAt", savedUser.getUpdatedAt());
+
+        mailSenderService.sendWelcomeMail(savedUser.getEmail(), "Bem-vindo ao Capital Atelier", "newSignUp", context);
 
         return toDTO(savedUser);
     }
 
-    public UserResponseDTO updateUser(Long id, UpdateUserDTO dto) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        if (dto.email() != null && !dto.email().isBlank() && !dto.email().equalsIgnoreCase(user.getEmail())) {
-            if (repository.findByEmail(dto.email()).isPresent()) {
-                throw new RuntimeException("E-mail já cadastrado por outro usuário");
-            }
-            user.setEmail(dto.email());
-        }
-
-        if (dto.username() != null && !dto.username().isBlank()) {
-            user.setUsername(dto.username());
-        }
-
-        User updatedUser = repository.save(user);
-        return toDTO(updatedUser);
+    public UserResponseDTO getMe() {
+        User user = securityUtils.getAuthenticatedUser();
+        return toDTO(user);
     }
 
-    public void changePassword(Long id, ChangePasswordDTO dto) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if (!passwordEncoder.matches(dto.oldPassword(), user.getEncryptedPassword())) {
-            throw new RuntimeException("Senha atual incorreta");
+    public UserResponseDTO updateMe(UpdateUserDTO dto) {
+        User user = securityUtils.getAuthenticatedUser();
+        if (dto.username() != null && !dto.username().isBlank()) {
+            user.setUsername(dto.username());
+            user = repository.save(user);
         }
+        return toDTO(user);
+    }
 
+    public void changePasswordMe(ChangePasswordDTO dto) {
+        User user = securityUtils.getAuthenticatedUser();
+        if (!passwordEncoder.matches(dto.currentPassword(), user.getEncryptedPassword())) {
+            throw new RuntimeException("A senha atual informada está incorreta");
+        }
         user.setEncryptedPassword(passwordEncoder.encode(dto.newPassword()));
         repository.save(user);
     }
 
-    public UserResponseDTO toDTO(User user) {
+    private UserResponseDTO toDTO(User user) {
         return new UserResponseDTO(
             user.getId(),
             user.getUsername(),

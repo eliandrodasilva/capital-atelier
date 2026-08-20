@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ import com.capitalatelier.api.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @CrossOrigin()
 public class UserController {
     
@@ -32,18 +33,19 @@ public class UserController {
         return new ResponseEntity<>(service.createUser(dto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateUserDTO dto) {
-        return ResponseEntity.ok(service.updateUser(id, dto));
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe() {
+        return ResponseEntity.ok(service.getMe());
     }
 
-    @PutMapping("/{id}/change-password")
-    public ResponseEntity<Void> changePassword(
-            @PathVariable Long id,
-            @Valid @RequestBody ChangePasswordDTO dto) {
-        service.changePassword(id, dto);
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDTO> updateMe(@Valid @RequestBody UpdateUserDTO dto) {
+        return ResponseEntity.ok(service.updateMe(dto));
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordDTO dto) {
+        service.changePasswordMe(dto);
         return ResponseEntity.ok().build();
     }
 }
