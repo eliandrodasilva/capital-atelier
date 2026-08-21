@@ -2,15 +2,27 @@ import BaseService from "./BaseService";
 
 class UserService extends BaseService {
     constructor() {
-        super("/users");
+        super("/api/users");
     }
 
-    async updateUser(id, data) {
-        return this.update(id, data);
+    async create(data) {
+        return this.api.post(this.endPoint, data);
     }
 
-    async changePassword(id, data) {
-        return this.api.put(`${this.endPoint}/${id}/change-password`, data);
+    async getProfile() {
+        return this.api.get(`${this.endPoint}/me`);
+    }
+
+    async updateProfile(data) {
+        return this.api.put(`${this.endPoint}/me`, data);
+    }
+
+    async changePassword(idOrData, maybeData) {
+        const data = maybeData || idOrData;
+        return this.api.patch(`${this.endPoint}/me/password`, {
+            currentPassword: data.oldPassword || data.currentPassword,
+            newPassword: data.newPassword,
+        });
     }
 }
 

@@ -43,8 +43,9 @@ const LoginPage = () => {
     try {
       const response = await authService.login(credentials);
 
-      if (response.data && response.data.token) {
-        localStorage.setItem("app-token", response.data.token);
+      const token = response.data?.accessToken || response.data?.token;
+      if (token) {
+        localStorage.setItem("app-token", token);
         localStorage.setItem("usuario", JSON.stringify(response.data));
       }
 

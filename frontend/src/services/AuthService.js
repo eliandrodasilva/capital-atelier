@@ -5,6 +5,14 @@ class AuthService extends BaseService {
         super("/auth");
     }
 
+    async register(userData) {
+        return this.api.post(`${this.endPoint}/register`, {
+            name: userData.username || userData.name,
+            email: userData.email,
+            password: userData.password,
+        });
+    }
+
     async login(credentials) {
         return this.api.post(`${this.endPoint}/login`, credentials);
     }

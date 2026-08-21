@@ -12,12 +12,12 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import UserService from "@/services/UserService";
+import AuthService from "@/services/AuthService";
 import { Link } from "react-router-dom";
 import PasswordStrengthMeter from "@/components/PasswordStrengthMeter/PasswordStrengthMeter";
 import AlertMessage from "@/components/ui/AlertMessage";
 
-const userService = new UserService();
+const authService = new AuthService();
 
 const RegisterPage = () => {
   const [user, setUser] = useState({
@@ -54,8 +54,8 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      await userService.create({
-        username: user.username,
+      await authService.register({
+        name: user.username,
         email: user.email,
         password: user.password,
       });
