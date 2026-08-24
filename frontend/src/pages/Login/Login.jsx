@@ -61,7 +61,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-zinc-950 p-4 font-sans text-zinc-50 m-0 absolute inset-0">
+    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-zinc-950 p-4 font-sans m-0 absolute inset-0">
       <div className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden">
         
         <div className="p-8 md:p-12 flex flex-col justify-center">
@@ -71,7 +71,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <h1 className="text-2xl font-medium tracking-tight text-zinc-100">
+            <h1 className="text-2xl font-medium tracking-tight text-white">
               Entrar na Sua Conta
             </h1>
           </div>
