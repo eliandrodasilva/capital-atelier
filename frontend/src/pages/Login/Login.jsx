@@ -71,7 +71,7 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <h1 className="text-2xl font-medium tracking-tight text-white">
+            <h1 className="text-2xl font-medium tracking-tight text-zinc-100">
               Entrar na Sua Conta
             </h1>
           </div>
