@@ -19,30 +19,7 @@ import {
   Tooltip, 
   Legend 
 } from "recharts";
-
-const MOCK_METRICS = {
-  balance: 12450.00,
-  income: 18200.00,
-  expenses: 5750.00
-};
-
-const MOCK_CHART_DATA = [
-  { name: "Jan", Income: 4000, Expenses: 2400 },
-  { name: "Fev", Income: 3000, Expenses: 1398 },
-  { name: "Mar", Income: 2000, Expenses: 9800 },
-  { name: "Abr", Income: 2780, Expenses: 3908 },
-  { name: "Mai", Income: 1890, Expenses: 4800 },
-  { name: "Jun", Income: 2390, Expenses: 3800 },
-  { name: "Jul", Income: 3490, Expenses: 4300 }
-];
-
-const MOCK_TRANSACTIONS = [
-  { id: 1, description: "Salário Capital Atelier", value: 7500.00, type: "income", date: "05/08/2026" },
-  { id: 2, description: "Aluguel Escritório", value: 1200.00, type: "expense", date: "01/08/2026" },
-  { id: 3, description: "Freelance Landing Page", value: 2200.00, type: "income", date: "25/07/2026" },
-  { id: 4, description: "Assinatura Software SaaS", value: 350.00, type: "expense", date: "28/07/2026" },
-  { id: 5, description: "Servidores Nuvem AWS", value: 180.00, type: "expense", date: "20/07/2026" }
-];
+import api from "@/config/axiosConfig";
 
 const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
@@ -51,14 +28,72 @@ const DashboardPage = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMetrics(MOCK_METRICS);
-      setChartData(MOCK_CHART_DATA);
-      setTransactions(MOCK_TRANSACTIONS);
-      setLoading(false);
-    }, 1000);
+    async function loadDashboardData() {
+      try {
+        setLoading(true);
 
-    return () => clearTimeout(timer);
+        let walletsRes = await api.get("/api/wallets");
+        let wallets = walletsRes.data || [];
+
+        if (wallets.length === 0) {
+          const newWalletRes = await api.post("/api/wallets", {
+            name: "Minha Carteira",
+            description: "Carteira principal de controle financeiro"
+          });
+          if (newWalletRes.data) {
+            wallets = [newWalletRes.data];
+          }
+        }
+
+        const activeWallet = wallets[0];
+
+        if (activeWallet) {
+          const summaryRes = await api.get(`/api/wallets/${activeWallet.id}/summary`);
+          const summary = summaryRes.data;
+
+          if (summary) {
+            setMetrics({
+              balance: Number(summary.balance) || 0,
+              income: Number(summary.totalIncome) || 0,
+              expenses: Number(summary.totalExpense) || 0
+            });
+
+            if (summary.byMonth && summary.byMonth.length > 0) {
+              setChartData(
+                summary.byMonth.map((m) => ({
+                  name: m.month,
+                  Income: Number(m.income) || 0,
+                  Expenses: Number(m.expense) || 0
+                }))
+              );
+            } else {
+              setChartData([]);
+            }
+          }
+
+          const transRes = await api.get(
+            `/api/wallets/${activeWallet.id}/transactions?page=0&size=5&sort=date,desc`
+          );
+          const transContent = transRes.data?.content || [];
+
+          setTransactions(
+            transContent.map((t) => ({
+              id: t.id,
+              description: t.description || "Sem descrição",
+              value: Number(t.amount) || 0,
+              type: t.type ? t.type.toLowerCase() : "expense",
+              date: t.date
+            }))
+          );
+        }
+      } catch (err) {
+        console.error("Erro ao carregar dados do dashboard:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadDashboardData();
   }, []);
 
   const formatCurrency = (value) => {
@@ -136,30 +171,36 @@ const DashboardPage = () => {
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl">
         <h3 className="text-lg font-medium text-zinc-200 mb-6">Fluxo de Caixa (Mensal)</h3>
         <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a" }} 
-                labelStyle={{ color: "#a1a1aa" }}
-              />
-              <Legend verticalAlign="top" height={36} iconType="circle" />
-              <Area type="monotone" dataKey="Income" name="Receitas" stroke="#10b981" fillOpacity={1} fill="url(#colorIncome)" strokeWidth={2} />
-              <Area type="monotone" dataKey="Expenses" name="Despesas" stroke="#f43f5e" fillOpacity={1} fill="url(#colorExpenses)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a" }} 
+                  labelStyle={{ color: "#a1a1aa" }}
+                />
+                <Legend verticalAlign="top" height={36} iconType="circle" />
+                <Area type="monotone" dataKey="Income" name="Receitas" stroke="#10b981" fillOpacity={1} fill="url(#colorIncome)" strokeWidth={2} />
+                <Area type="monotone" dataKey="Expenses" name="Despesas" stroke="#f43f5e" fillOpacity={1} fill="url(#colorExpenses)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center flex-col text-zinc-500 text-sm">
+              <p>Nenhuma movimentação mensal registrada ainda.</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -169,33 +210,39 @@ const DashboardPage = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-zinc-300">
-            <thead className="text-xs uppercase bg-zinc-950/50 text-zinc-500 border-b border-zinc-800">
-              <tr>
-                <th scope="col" className="px-6 py-4 rounded-l-lg">Descrição</th>
-                <th scope="col" className="px-6 py-4">Data</th>
-                <th scope="col" className="px-6 py-4 text-right rounded-r-lg">Valor</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-850">
-              {transactions.map((t) => (
-                <tr key={t.id} className="hover:bg-zinc-800/20 transition-colors">
-                  <td className="px-6 py-4 flex items-center gap-3 font-medium text-zinc-200">
-                    {t.type === "income" ? (
-                      <PlusCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                    ) : (
-                      <MinusCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                    )}
-                    {t.description}
-                  </td>
-                  <td className="px-6 py-4 text-zinc-400">{t.date}</td>
-                  <td className={`px-6 py-4 text-right font-semibold ${t.type === 'income' ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {t.type === 'income' ? '+' : '-'} {formatCurrency(t.value)}
-                  </td>
+          {transactions.length > 0 ? (
+            <table className="w-full text-left text-sm text-zinc-300">
+              <thead className="text-xs uppercase bg-zinc-950/50 text-zinc-500 border-b border-zinc-800">
+                <tr>
+                  <th scope="col" className="px-6 py-4 rounded-l-lg">Descrição</th>
+                  <th scope="col" className="px-6 py-4">Data</th>
+                  <th scope="col" className="px-6 py-4 text-right rounded-r-lg">Valor</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-zinc-850">
+                {transactions.map((t) => (
+                  <tr key={t.id} className="hover:bg-zinc-800/20 transition-colors">
+                    <td className="px-6 py-4 flex items-center gap-3 font-medium text-zinc-200">
+                      {t.type === "income" ? (
+                        <PlusCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <MinusCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      )}
+                      {t.description}
+                    </td>
+                    <td className="px-6 py-4 text-zinc-400">{t.date}</td>
+                    <td className={`px-6 py-4 text-right font-semibold ${t.type === 'income' ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {t.type === 'income' ? '+' : '-'} {formatCurrency(t.value)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="py-8 text-center text-zinc-500 text-sm">
+              <p>Nenhum lançamento registrado nesta carteira.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
