@@ -1,21 +1,26 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
-const Progress = React.forwardRef(({ className, value, indicatorClassName, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "relative h-2 w-full overflow-hidden rounded-full bg-zinc-800",
-      className
-    )}
-    {...props}
-  >
+const Progress = React.forwardRef(
+  ({ className, value, indicatorClassName, ...props }, ref) => (
     <div
-      className={cn("h-full w-full flex-1 transition-all duration-300", indicatorClassName)}
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </div>
-))
-Progress.displayName = "Progress"
+      ref={ref}
+      className={cn(
+        'border-border bg-secondary relative h-2 w-full overflow-hidden rounded-none border',
+        className
+      )}
+      {...props}
+    >
+      <div
+        className={cn(
+          'bg-primary h-full w-full flex-1 transition-all duration-300',
+          indicatorClassName
+        )}
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      />
+    </div>
+  )
+);
+Progress.displayName = 'Progress';
 
-export { Progress }
+export { Progress };
