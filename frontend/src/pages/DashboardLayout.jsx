@@ -1,18 +1,18 @@
-import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import Sidebar from "../components/layout/Sidebar";
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import Sidebar from '../components/layout/Sidebar';
 
 const DashboardLayout = () => {
-  const token = localStorage.getItem("app-token");
+  const token = localStorage.getItem('app-token');
 
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-zinc-950 text-zinc-100">
+    <div className="bg-background text-foreground flex min-h-screen w-full">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto p-8">
         <Outlet />
       </main>
     </div>

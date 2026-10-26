@@ -15,11 +15,11 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="sticky top-0 flex h-screen w-64 flex-shrink-0 flex-col border-r border-zinc-800 bg-zinc-950">
-      <div className="flex h-20 items-center justify-between gap-3 border-b border-zinc-800/50 px-6">
+    <aside className="border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r">
+      <div className="border-sidebar-border flex h-20 items-center justify-between gap-3 border-b px-6">
         <div className="flex items-center gap-3 overflow-hidden">
-          <Wallet className="h-6 w-6 flex-shrink-0 text-zinc-100" />
-          <span className="overflow-hidden text-lg font-semibold tracking-tight whitespace-nowrap text-zinc-100">
+          <Wallet className="text-sidebar-foreground size-6 shrink-0" />
+          <span className="text-sidebar-foreground overflow-hidden text-lg font-semibold tracking-tight whitespace-nowrap">
             Capital Atelier
           </span>
         </div>
@@ -28,11 +28,11 @@ const Sidebar = () => {
 
       <div className="custom-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto py-6">
         <div className="px-4">
-          <span className="mb-3 block px-2 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+          <span className="text-muted-foreground mb-3 block px-2 text-[10px] font-bold tracking-wider uppercase">
             Menu
           </span>
 
-          <nav className="space-y-1">
+          <nav className="flex flex-col gap-1">
             <NavItem
               icon={<LayoutDashboard />}
               label="Dashboard"
@@ -43,20 +43,17 @@ const Sidebar = () => {
         </div>
 
         <div className="px-4">
-          <span className="mb-3 block px-2 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+          <span className="text-muted-foreground mb-3 block px-2 text-[10px] font-bold tracking-wider uppercase">
             Sistema
           </span>
 
-          <nav className="space-y-1">
+          <nav className="flex flex-col gap-1">
             <NavItem
               icon={<User />}
               label="Perfil"
               active={location.pathname === '/profile'}
               onClick={() => navigate('/profile')}
             />
-          </nav>
-
-          <nav className="space-y-1">
             <NavItem
               icon={<Settings />}
               label="Configurações"
@@ -67,12 +64,12 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="border-t border-zinc-800/50 p-4">
+      <div className="border-sidebar-border border-t p-4">
         <div
           className="mb-4 flex cursor-pointer items-center"
           onClick={() => navigate('/profile')}
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-zinc-700 bg-zinc-800">
+          <div className="border-sidebar-border bg-secondary flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-none border">
             <img
               src={`https://api.dicebear.com/7.x/notionists/svg?seed=${usuario.username || 'User'}`}
               alt="User"
@@ -80,10 +77,10 @@ const Sidebar = () => {
             />
           </div>
           <div className="ml-3 overflow-hidden">
-            <p className="max-w-[140px] truncate text-sm font-medium whitespace-nowrap text-zinc-100">
+            <p className="text-sidebar-foreground max-w-[140px] truncate text-sm font-medium whitespace-nowrap">
               {usuario.username || 'Usuário'}
             </p>
-            <p className="max-w-[140px] truncate text-xs whitespace-nowrap text-zinc-500">
+            <p className="text-muted-foreground max-w-[140px] truncate text-xs whitespace-nowrap">
               {usuario.email || 'Sem e-mail'}
             </p>
           </div>
@@ -91,9 +88,9 @@ const Sidebar = () => {
 
         <button
           onClick={handleLogout}
-          className="flex w-full cursor-pointer items-center rounded-lg p-2 text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
+          className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full cursor-pointer items-center rounded-none p-2"
         >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
+          <LogOut className="size-5 shrink-0" />
           <span className="ml-3 text-sm font-medium whitespace-nowrap">
             Sair
           </span>
@@ -107,16 +104,20 @@ function NavItem({ icon, label, active = false, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`group flex w-full cursor-pointer items-center rounded-lg p-2 text-left ${
+      className={`group flex w-full cursor-pointer items-center rounded-none p-2 text-left ${
         active
-          ? 'bg-zinc-800 text-zinc-100'
-          : 'text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-100'
-      } `}
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+          : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+      }`}
     >
       <div
-        className={`flex-shrink-0 ${active ? 'text-zinc-100' : 'text-zinc-400 group-hover:text-zinc-100'}`}
+        className={`shrink-0 ${
+          active
+            ? 'text-sidebar-accent-foreground'
+            : 'text-muted-foreground group-hover:text-sidebar-accent-foreground'
+        }`}
       >
-        {React.cloneElement(icon, { className: 'w-5 h-5' })}
+        {React.cloneElement(icon, { className: 'size-5' })}
       </div>
 
       <span className="ml-3 overflow-hidden text-sm font-medium whitespace-nowrap">
