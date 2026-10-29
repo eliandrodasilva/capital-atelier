@@ -1,34 +1,35 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { User, Mail, KeyRound, Save } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import UserService from "@/services/UserService";
-import AlertMessage from "@/components/ui/AlertMessage";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { User, Mail, KeyRound, Save } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import UserService from '@/services/UserService';
+import AlertMessage from '@/components/ui/AlertMessage';
+import { Separator } from '@/components/ui/separator';
 
 const userService = new UserService();
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-  const [username, setUsername] = useState(usuario.username || "");
-  const [email, setEmail] = useState(usuario.email || "");
+  const [username, setUsername] = useState(usuario.username || '');
+  const [email, setEmail] = useState(usuario.email || '');
 
   const [loadingUsername, setLoadingUsername] = useState(false);
   const [loadingEmail, setLoadingEmail] = useState(false);
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleUpdateUsername = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
 
     if (!username.trim()) {
-      setError("O nome de usuário não pode estar em branco.");
+      setError('O nome de usuário não pode estar em branco.');
       return;
     }
 
@@ -36,16 +37,18 @@ const ProfilePage = () => {
 
     try {
       const response = await userService.updateUser(usuario.id, { username });
-      
+
       const updatedUser = {
         ...usuario,
         username: response.data.username || username,
       };
 
-      localStorage.setItem("usuario", JSON.stringify(updatedUser));
-      setSuccess("Nome de usuário atualizado com sucesso!");
+      localStorage.setItem('usuario', JSON.stringify(updatedUser));
+      setSuccess('Nome de usuário atualizado com sucesso!');
     } catch (err) {
-      setError(err?.response?.data?.message || "Erro ao atualizar nome de usuário.");
+      setError(
+        err?.response?.data?.message || 'Erro ao atualizar nome de usuário.'
+      );
     } finally {
       setLoadingUsername(false);
     }
@@ -53,11 +56,11 @@ const ProfilePage = () => {
 
   const handleUpdateEmail = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
 
     if (!email.trim()) {
-      setError("O e-mail não pode estar em branco.");
+      setError('O e-mail não pode estar em branco.');
       return;
     }
 
@@ -71,115 +74,115 @@ const ProfilePage = () => {
         email: response.data.email || email,
       };
 
-      localStorage.setItem("usuario", JSON.stringify(updatedUser));
-      setSuccess("E-mail atualizado com sucesso!");
+      localStorage.setItem('usuario', JSON.stringify(updatedUser));
+      setSuccess('E-mail atualizado com sucesso!');
     } catch (err) {
-      setError(err?.response?.data?.message || "Erro ao atualizar e-mail.");
+      setError(err?.response?.data?.message || 'Erro ao atualizar e-mail.');
     } finally {
       setLoadingEmail(false);
     }
   };
 
   return (
-    <div className="space-y-6 w-full max-w-7xl mx-auto">
-      <header className="border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-100">Perfil de Usuário</h1>
-        <p className="text-sm text-zinc-400 mt-1">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <header className="border-border border-b pb-4">
+        <h1 className="text-3xl font-bold tracking-tight">Perfil de Usuário</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
           Gerencie suas informações pessoais e credenciais da conta.
         </p>
       </header>
 
-      <main className="space-y-6">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-zinc-800 border border-zinc-700 flex-shrink-0 flex items-center justify-center overflow-hidden">
+      <main className="flex flex-col gap-6">
+        <div className="border-border bg-card text-card-foreground flex items-center gap-4 rounded-none border p-6">
+          <div className="border-border bg-secondary flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-none border">
             <img
-              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${username || "User"}`}
+              src={`https://api.dicebear.com/7.x/notionists/svg?seed=${username || 'User'}`}
               alt="User Avatar"
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
           <div className="overflow-hidden">
-            <h2 className="text-xl font-semibold text-zinc-100 truncate">
-              {username || "Usuário"}
+            <h2 className="truncate text-xl font-semibold">
+              {username || 'Usuário'}
             </h2>
-            <p className="text-sm text-zinc-400 truncate">{email || "Sem e-mail"}</p>
+            <p className="text-muted-foreground truncate text-sm">
+              {email || 'Sem e-mail'}
+            </p>
           </div>
         </div>
 
         <AlertMessage message={error} variant="error" />
         <AlertMessage message={success} variant="success" />
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
-          
-          <form onSubmit={handleUpdateUsername} className="space-y-2">
-            <Label htmlFor="username" className="text-zinc-400">
+        <div className="border-border bg-card text-card-foreground flex flex-col gap-6 rounded-none border p-6">
+          <form onSubmit={handleUpdateUsername} className="flex flex-col gap-2">
+            <Label htmlFor="username" className="text-muted-foreground">
               Nome de Usuário
             </Label>
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <User className="absolute left-3 top-3 w-4 h-4 text-zinc-600" />
+                <User className="text-muted-foreground absolute top-2.5 left-3 size-4" />
                 <Input
                   id="username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Seu nome de usuário"
-                  className="pl-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
+                  className="pl-10"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={loadingUsername}
-                className="bg-zinc-100 text-zinc-900 hover:bg-zinc-300 font-medium cursor-pointer"
+                className="cursor-pointer font-medium"
               >
-                <Save className="w-4 h-4 mr-2" />
-                {loadingUsername ? "SALVANDO..." : "SALVAR"}
+                <Save data-icon="inline-start" />
+                {loadingUsername ? 'SALVANDO...' : 'SALVAR'}
               </Button>
             </div>
           </form>
 
-          <hr className="border-zinc-800" />
+          <Separator />
 
-          <form onSubmit={handleUpdateEmail} className="space-y-2">
-            <Label htmlFor="email" className="text-zinc-400">
+          <form onSubmit={handleUpdateEmail} className="flex flex-col gap-2">
+            <Label htmlFor="email" className="text-muted-foreground">
               E-mail
             </Label>
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <Mail className="absolute left-3 top-3 w-4 h-4 text-zinc-600" />
+                <Mail className="text-muted-foreground absolute top-2.5 left-3 size-4" />
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
-                  className="pl-10 bg-zinc-950/50 border-zinc-800 focus-visible:ring-zinc-700 text-zinc-100"
+                  className="pl-10"
                 />
               </div>
               <Button
                 type="submit"
                 disabled={loadingEmail}
-                className="bg-zinc-100 text-zinc-900 hover:bg-zinc-300 font-medium cursor-pointer"
+                className="cursor-pointer font-medium"
               >
-                <Save className="w-4 h-4 mr-2" />
-                {loadingEmail ? "SALVANDO..." : "SALVAR"}
+                <Save data-icon="inline-start" />
+                {loadingEmail ? 'SALVANDO...' : 'SALVAR'}
               </Button>
             </div>
           </form>
 
-          <hr className="border-zinc-800" />
+          <Separator />
 
           <div className="pt-2">
             <Button
-              onClick={() => navigate("/profile/change-password")}
+              onClick={() => navigate('/profile/change-password')}
               variant="outline"
-              className="w-full border-zinc-700 bg-zinc-950 hover:bg-zinc-800 text-zinc-200 font-semibold cursor-pointer py-5"
+              className="w-full cursor-pointer py-5 font-semibold"
             >
-              <KeyRound className="w-4 h-4 mr-2" />
+              <KeyRound data-icon="inline-start" />
               REDEFINIR SENHA
             </Button>
           </div>
-
         </div>
       </main>
     </div>

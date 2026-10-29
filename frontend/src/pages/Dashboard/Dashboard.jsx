@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   TrendingUp,
   TrendingDown,
@@ -112,8 +112,8 @@ const DashboardPage = () => {
   if (loading) {
     return (
       <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4">
-        <Loader2 className="h-10 w-10 animate-spin text-zinc-400" />
-        <p className="text-sm tracking-wide text-zinc-400">
+        <Loader2 className="text-muted-foreground size-10 animate-spin" />
+        <p className="text-muted-foreground text-sm tracking-wide">
           Carregando dados financeiros...
         </p>
       </div>
@@ -121,73 +121,69 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
-      <header className="border-b border-zinc-800 pb-4">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-50">
-          Dashboard
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+      <header className="border-border border-b pb-4">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
           Visão geral do seu sistema e estatísticas financeiras.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
+        <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-zinc-400">
+            <span className="text-muted-foreground text-sm font-medium">
               Saldo Atual
             </span>
-            <div className="rounded-lg bg-zinc-800 p-2 text-zinc-300">
-              <DollarSign className="h-5 w-5" />
+            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
+              <DollarSign className="size-5" />
             </div>
           </div>
-          <h2 className="text-3xl font-semibold tracking-tight text-zinc-50">
+          <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.balance)}
           </h2>
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="text-muted-foreground mt-2 text-xs">
             Disponível em conta e carteira compartilhada
           </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
+        <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-zinc-400">
+            <span className="text-muted-foreground text-sm font-medium">
               Total de Receitas
             </span>
-            <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-400">
-              <TrendingUp className="h-5 w-5" />
+            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
+              <TrendingUp className="size-5" />
             </div>
           </div>
-          <h2 className="text-3xl font-semibold tracking-tight text-emerald-400">
+          <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.income)}
           </h2>
-          <p className="mt-2 flex items-center gap-1 text-xs text-emerald-500/80">
-            <ArrowUpRight className="h-4 w-4" /> Período atual de 30 dias
+          <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
+            <ArrowUpRight className="size-4" /> Período atual de 30 dias
           </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
+        <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-zinc-400">
+            <span className="text-muted-foreground text-sm font-medium">
               Total de Despesas
             </span>
-            <div className="rounded-lg bg-red-500/10 p-2 text-red-400">
-              <TrendingDown className="h-5 w-5" />
+            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
+              <TrendingDown className="size-5" />
             </div>
           </div>
-          <h2 className="text-3xl font-semibold tracking-tight text-red-400">
+          <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.expenses)}
           </h2>
-          <p className="mt-2 flex items-center gap-1 text-xs text-red-500/80">
-            <ArrowDownLeft className="h-4 w-4" /> Período atual de 30 dias
+          <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
+            <ArrowDownLeft className="size-4" /> Período atual de 30 dias
           </p>
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
-        <h3 className="mb-6 text-lg font-medium text-zinc-200">
-          Fluxo de Caixa (Mensal)
-        </h3>
+      <div className="border-border bg-card text-card-foreground rounded-none border p-6">
+        <h3 className="mb-6 text-lg font-medium">Fluxo de Caixa (Mensal)</h3>
         <div className="h-[300px] w-full">
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
@@ -195,51 +191,37 @@ const DashboardPage = () => {
                 data={chartData}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
-                <defs>
-                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient
-                    id="colorExpenses"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                   dataKey="name"
-                  stroke="#71717a"
+                  stroke="var(--muted-foreground)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke="#71717a"
+                  stroke="var(--muted-foreground)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#18181b',
-                    borderColor: '#27272a',
+                    backgroundColor: 'var(--card)',
+                    borderColor: 'var(--border)',
+                    borderRadius: '0px',
+                    color: 'var(--foreground)',
                   }}
-                  labelStyle={{ color: '#a1a1aa' }}
+                  labelStyle={{ color: 'var(--muted-foreground)' }}
                 />
-                <Legend verticalAlign="top" height={36} iconType="circle" />
+                <Legend verticalAlign="top" height={36} iconType="square" />
                 <Area
                   type="monotone"
                   dataKey="Income"
                   name="Receitas"
-                  stroke="#10b981"
-                  fillOpacity={1}
-                  fill="url(#colorIncome)"
+                  stroke="var(--chart-1)"
+                  fillOpacity={0.12}
+                  fill="var(--chart-1)"
                   strokeWidth={2}
                   isAnimationActive={false}
                 />
@@ -247,59 +229,64 @@ const DashboardPage = () => {
                   type="monotone"
                   dataKey="Expenses"
                   name="Despesas"
-                  stroke="#f43f5e"
-                  fillOpacity={1}
-                  fill="url(#colorExpenses)"
+                  stroke="var(--chart-3)"
+                  strokeDasharray="4 4"
+                  fillOpacity={0.08}
+                  fill="var(--chart-3)"
                   strokeWidth={2}
                   isAnimationActive={false}
                 />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center text-sm text-zinc-500">
+            <div className="text-muted-foreground flex h-full flex-col items-center justify-center text-sm">
               <p>Nenhuma movimentação mensal registrada ainda.</p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
+      <div className="border-border bg-card text-card-foreground rounded-none border p-6">
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-medium text-zinc-200">
-            Lançamentos Recentes
-          </h3>
+          <h3 className="text-lg font-medium">Lançamentos Recentes</h3>
         </div>
 
         <div className="overflow-x-auto">
           {transactions.length > 0 ? (
-            <table className="w-full text-left text-sm text-zinc-300">
-              <thead className="border-b border-zinc-800 bg-zinc-950/50 text-xs text-zinc-500 uppercase">
+            <table className="w-full text-left text-sm">
+              <thead className="border-border bg-secondary text-muted-foreground border-b text-xs uppercase">
                 <tr>
-                  <th scope="col" className="rounded-l-lg px-6 py-4">
+                  <th scope="col" className="px-6 py-4">
                     Descrição
                   </th>
                   <th scope="col" className="px-6 py-4">
                     Data
                   </th>
-                  <th scope="col" className="rounded-r-lg px-6 py-4 text-right">
+                  <th scope="col" className="px-6 py-4 text-right">
                     Valor
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-zinc-850 divide-y">
+              <tbody className="divide-border divide-y">
                 {transactions.map((t) => (
-                  <tr key={t.id} className="hover:bg-zinc-800/20">
-                    <td className="flex items-center gap-3 px-6 py-4 font-medium text-zinc-200">
+                  <tr key={t.id} className="hover:bg-secondary/60">
+                    <td className="flex items-center gap-3 px-6 py-4 font-medium">
                       {t.type === 'income' ? (
-                        <PlusCircle className="h-5 w-5 flex-shrink-0 text-emerald-400" />
+                        <PlusCircle className="text-foreground size-5 shrink-0" />
                       ) : (
-                        <MinusCircle className="h-5 w-5 flex-shrink-0 text-red-400" />
+                        <MinusCircle className="text-muted-foreground size-5 shrink-0" />
                       )}
                       {t.description}
                     </td>
-                    <td className="px-6 py-4 text-zinc-400">{t.date}</td>
+                    <td className="text-muted-foreground px-6 py-4">
+                      {t.date}
+                    </td>
                     <td
-                      className={`px-6 py-4 text-right font-semibold ${t.type === 'income' ? 'text-emerald-400' : 'text-red-400'}`}
+                      className={`px-6 py-4 text-right font-semibold ${
+                        t.type === 'income'
+                          ? 'text-foreground'
+                          : 'text-muted-foreground'
+                      }`}
                     >
                       {t.type === 'income' ? '+' : '-'}{' '}
                       {formatCurrency(t.value)}
@@ -309,7 +296,7 @@ const DashboardPage = () => {
               </tbody>
             </table>
           ) : (
-            <div className="py-8 text-center text-sm text-zinc-500">
+            <div className="text-muted-foreground py-8 text-center text-sm">
               <p>Nenhum lançamento registrado nesta carteira.</p>
             </div>
           )}

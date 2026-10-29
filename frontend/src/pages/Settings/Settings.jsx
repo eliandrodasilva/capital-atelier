@@ -1,20 +1,16 @@
-import React, { useState } from "react";
-
 const SettingsPage = () => {
-    return (
-        <div className="space-y-6 w-full">
-      <header className="border-b border-zinc-800 pb-4">
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <header className="border-border border-b pb-4">
         <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
-        <p className="text-sm text-zinc-400 mt-1">
+        <p className="text-muted-foreground mt-1 text-sm">
           Aqui vai ficar as configurações
         </p>
       </header>
 
-      <main className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-4">
-        
-      </main>
+      <main className="border-border bg-card text-card-foreground flex flex-col gap-4 rounded-none border p-6"></main>
     </div>
-    )
-}
+  );
+};
 
 export default SettingsPage;
