@@ -1,0 +1,13 @@
+{
+  "name": "capital-atelier",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format:front": "npm --prefix frontend run format",
+    "format:back": "node scripts/run-backend.js spotless:apply",
+    "format": "npm run format:front && npm run format:back",
+    "check:front": "npm --prefix frontend run format:check",
+    "check:back": "node scripts/run-backend.js spotless:check",
+    "check": "npm run check:front && npm run check:back"
+  }
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const AlertMessage = ({ message, variant = 'error' }) => {

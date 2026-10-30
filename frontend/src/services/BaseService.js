@@ -1,55 +1,30 @@
-import api from "@/config/axiosConfig";
+import api from '@/config/axiosConfig';
 
 class BaseService {
-    constructor(endPoint) {
-        this.endPoint = endPoint;
-        this.api = api;
-    }
+  constructor(endPoint) {
+    this.endPoint = endPoint;
+    this.api = api;
+  }
 
-    async create(data) {
-        try {
-            const response = await this.api.post(this.endPoint, data);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+  async create(data) {
+    return this.api.post(this.endPoint, data);
+  }
 
-    async getAll() {
-        try {
-            const response = await this.api.get(this.endPoint);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+  async getAll() {
+    return this.api.get(this.endPoint);
+  }
 
-    async getById(id) {
-        try {
-            const response = await this.api.get(`${this.endPoint}/${id}`);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+  async getById(id) {
+    return this.api.get(`${this.endPoint}/${id}`);
+  }
 
-    async update(id, data) {
-        try {
-            const response = await this.api.put(`${this.endPoint}/${id}`, data);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+  async update(id, data) {
+    return this.api.put(`${this.endPoint}/${id}`, data);
+  }
 
-    async delete(id) {
-        try {
-            const response = await this.api.delete(`${this.endPoint}/${id}`);
-            return response;
-        } catch (error) {
-            throw error;
-        }
-    }
+  async delete(id) {
+    return this.api.delete(`${this.endPoint}/${id}`);
+  }
 }
 
 export default BaseService;
