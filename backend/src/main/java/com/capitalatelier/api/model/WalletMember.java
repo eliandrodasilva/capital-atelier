@@ -1,11 +1,6 @@
 package com.capitalatelier.api.model;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.capitalatelier.api.enums.WalletRole;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,32 +13,34 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-@Table(name = "wallet_members", uniqueConstraints = { @UniqueConstraint(columnNames = { "wallet_id", "user_id" }) })
+@Table(name = "wallet_members", uniqueConstraints = {@UniqueConstraint(columnNames = {"wallet_id", "user_id"})})
 @Data
 public class WalletMember {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "wallet_id")
-    @NotNull(message = "A carteira é obrigatória")
-    private Wallet wallet;
+	@ManyToOne
+	@JoinColumn(name = "wallet_id")
+	@NotNull(message = "A carteira é obrigatória")
+	private Wallet wallet;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @NotNull(message = "O usuário membro é obrigatório")
-    private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@NotNull(message = "O usuário membro é obrigatório")
+	private User user;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "O papel do membro é obrigatório")
-    private WalletRole role;
+	@Enumerated(EnumType.STRING)
+	@NotNull(message = "O papel do membro é obrigatório")
+	private WalletRole role;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime joinedAt;
+	@CreationTimestamp
+	@Column(updatable = false)
+	private LocalDateTime joinedAt;
 }

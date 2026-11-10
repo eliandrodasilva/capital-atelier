@@ -1,25 +1,18 @@
 package com.capitalatelier.api.dto;
 
+import com.capitalatelier.api.enums.TransactionType;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.capitalatelier.api.enums.TransactionType;
+public record TransactionRequestDTO(@NotNull(message = "O tipo da transação é obrigatório") TransactionType type,
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
+		@NotNull(message = "O valor é obrigatório") @DecimalMin(value = "0.01", message = "O valor deve ser maior que zero") BigDecimal amount,
 
-public record TransactionRequestDTO(
-    @NotNull(message = "O tipo da transação é obrigatório")
-    TransactionType type,
+		String description,
 
-    @NotNull(message = "O valor é obrigatório")
-    @DecimalMin(value = "0.01", message = "O valor deve ser maior que zero")
-    BigDecimal amount,
+		@NotNull(message = "A data é obrigatória") LocalDate date,
 
-    String description,
-
-    @NotNull(message = "A data é obrigatória")
-    LocalDate date,
-
-    Long categoryId
-) {}
+		Long categoryId) {
+}
