@@ -79,17 +79,18 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="bg-background text-foreground flex min-h-[100dvh] w-full items-center justify-center p-4 font-sans">
+    <div className="bg-background text-foreground relative flex min-h-[100dvh] w-full items-center justify-center p-4 pt-16 font-sans sm:p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
       <div className="border-border bg-card text-card-foreground grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-none border md:grid-cols-2">
         <div className="flex flex-col justify-center p-8 md:p-12">
-          <div className="mb-6 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Wallet className="size-6" />
-              <span className="text-lg font-semibold tracking-tight">
-                Capital Atelier
-              </span>
-            </div>
-            <ThemeToggle />
+          <div className="mb-6 flex items-center gap-2">
+            <Wallet className="size-6" />
+            <span className="text-lg font-semibold tracking-tight">
+              Capital Atelier
+            </span>
           </div>
 
           <div className="mb-6">

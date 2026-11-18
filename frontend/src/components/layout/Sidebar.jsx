@@ -1,11 +1,21 @@
 import React from 'react';
-import { Wallet, LayoutDashboard, Settings, User, LogOut } from 'lucide-react';
+import {
+  Wallet,
+  LayoutDashboard,
+  Settings,
+  User,
+  LogOut,
+  Sun,
+  Moon,
+} from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { useTheme } from '@/hooks/useTheme';
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
   const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
   const handleLogout = () => {
@@ -16,14 +26,11 @@ const Sidebar = () => {
 
   return (
     <aside className="border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r">
-      <div className="border-sidebar-border flex h-20 items-center justify-between gap-3 border-b px-6">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <Wallet className="text-sidebar-foreground size-6 shrink-0" />
-          <span className="text-sidebar-foreground overflow-hidden text-lg font-semibold tracking-tight whitespace-nowrap">
-            Capital Atelier
-          </span>
-        </div>
-        <ThemeToggle />
+      <div className="border-sidebar-border flex h-20 items-center gap-3 border-b px-6">
+        <Wallet className="text-sidebar-foreground size-6 shrink-0" />
+        <span className="text-sidebar-foreground overflow-hidden text-lg font-semibold tracking-tight whitespace-nowrap">
+          Capital Atelier
+        </span>
       </div>
 
       <div className="custom-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto py-6">
@@ -86,15 +93,33 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleLogout}
-          className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full cursor-pointer items-center rounded-none p-2"
-        >
-          <LogOut className="size-5 shrink-0" />
-          <span className="ml-3 text-sm font-medium whitespace-nowrap">
-            Sair
-          </span>
-        </button>
+        <div className="flex flex-col gap-1">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full cursor-pointer items-center rounded-none p-2"
+          >
+            {isDark ? (
+              <Sun className="size-5 shrink-0" />
+            ) : (
+              <Moon className="size-5 shrink-0" />
+            )}
+            <span className="ml-3 text-sm font-medium whitespace-nowrap">
+              {isDark ? 'Tema claro' : 'Tema escuro'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full cursor-pointer items-center rounded-none p-2"
+          >
+            <LogOut className="size-5 shrink-0" />
+            <span className="ml-3 text-sm font-medium whitespace-nowrap">
+              Sair
+            </span>
+          </button>
+        </div>
       </div>
     </aside>
   );
