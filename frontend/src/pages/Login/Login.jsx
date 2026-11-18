@@ -2,15 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Rocket,
-  ArrowRight,
-  Wallet,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
+import { ArrowRight, Wallet, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import AuthService from '@/services/AuthService';
 import AlertMessage from '@/components/ui/AlertMessage';
@@ -163,18 +155,14 @@ const LoginPage = () => {
 
         <div className="border-border bg-secondary hidden flex-col items-center justify-center border-l p-12 text-center md:flex">
           <div className="relative z-10 flex flex-col items-center">
-            <div className="border-border bg-card mb-6 flex size-16 items-center justify-center rounded-none border">
-              <Rocket className="text-foreground size-8" />
-            </div>
-
             <h2 className="mb-4 text-2xl font-semibold tracking-tight">
               Ainda não conhece o<br />
               Capital Atelier?
             </h2>
 
             <p className="text-muted-foreground max-w-[280px] text-sm leading-relaxed">
-              Descubra uma nova dimensão de gestão financeira com nossa
-              plataforma moderna e inteligente.
+              O Capital Atelier é um projeto de controle de gastos pessoais,
+              desenvolvido para a disciplina de Programação Web.
             </p>
 
             <Button variant="outline" asChild className="mt-6 px-8">

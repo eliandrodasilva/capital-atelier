@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Wallet,
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  ShieldCheck,
-} from 'lucide-react';
+import { Wallet, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import AuthService from '@/services/AuthService';
 import AlertMessage from '@/components/ui/AlertMessage';
@@ -74,7 +67,7 @@ const ResetPasswordPage = () => {
         <ThemeToggle />
       </div>
 
-      <div className="border-border bg-card text-card-foreground grid w-full max-w-[900px] grid-cols-1 overflow-hidden rounded-none border md:grid-cols-2">
+      <div className="border-border bg-card text-card-foreground w-full max-w-[450px] overflow-hidden rounded-none border">
         <div className="flex flex-col justify-center p-8 md:p-12">
           <div className="mb-8 flex items-center gap-2">
             <Wallet className="size-6" />
@@ -163,22 +156,6 @@ const ResetPasswordPage = () => {
               </Link>
             </div>
           </form>
-        </div>
-
-        <div className="border-border bg-secondary hidden flex-col items-center justify-center border-l p-12 text-center md:flex">
-          <div className="flex flex-col items-center">
-            <div className="border-border bg-card mb-6 flex size-16 items-center justify-center rounded-none border">
-              <ShieldCheck className="text-foreground size-8" />
-            </div>
-
-            <h2 className="mb-3 text-xl font-semibold tracking-tight">
-              Segurança em 1º Lugar
-            </h2>
-
-            <p className="text-muted-foreground max-w-[260px] text-sm leading-relaxed">
-              Protegemos seus dados com criptografia de ponta a ponta.
-            </p>
-          </div>
         </div>
       </div>
     </div>

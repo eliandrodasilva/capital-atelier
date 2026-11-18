@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Rocket,
   ArrowRight,
   Wallet,
   User,
@@ -229,14 +228,10 @@ const RegisterPage = () => {
 
         <div className="border-border bg-secondary hidden flex-col items-center justify-center border-l p-12 text-center md:flex">
           <div className="relative z-10 flex flex-col items-center">
-            <div className="border-border bg-card mb-6 flex size-16 items-center justify-center rounded-none border">
-              <Rocket className="text-foreground size-8" />
-            </div>
-
             <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-              Já faz parte da
+              Já tem uma
               <br />
-              nossa rede?
+              conta cadastrada?
             </h2>
 
             <p className="text-muted-foreground max-w-[280px] text-sm leading-relaxed">
