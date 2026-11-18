@@ -87,9 +87,6 @@ const ProfilePage = () => {
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <header className="border-border border-b pb-4">
         <h1 className="text-3xl font-bold tracking-tight">Perfil de Usuário</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Gerencie suas informações pessoais e credenciais da conta.
-        </p>
       </header>
 
       <main className="flex flex-col gap-6">
