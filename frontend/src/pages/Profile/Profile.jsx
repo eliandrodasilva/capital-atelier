@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User, Mail, KeyRound, Save } from 'lucide-react';
+import { User, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserService from '@/services/UserService';
 import AlertMessage from '@/components/ui/AlertMessage';
@@ -44,7 +44,7 @@ const ProfilePage = () => {
       };
 
       localStorage.setItem('usuario', JSON.stringify(updatedUser));
-      setSuccess('Nome de usuário atualizado com sucesso!');
+      setSuccess('Nome de usuário atualizado.');
     } catch (err) {
       setError(
         err?.response?.data?.message || 'Erro ao atualizar nome de usuário.'
@@ -75,7 +75,7 @@ const ProfilePage = () => {
       };
 
       localStorage.setItem('usuario', JSON.stringify(updatedUser));
-      setSuccess('E-mail atualizado com sucesso!');
+      setSuccess('E-mail atualizado.');
     } catch (err) {
       setError(err?.response?.data?.message || 'Erro ao atualizar e-mail.');
     } finally {
@@ -86,7 +86,7 @@ const ProfilePage = () => {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <header className="border-border border-b pb-4">
-        <h1 className="text-3xl font-bold tracking-tight">Perfil de Usuário</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Perfil de usuário</h1>
       </header>
 
       <main className="flex flex-col gap-6">
@@ -114,7 +114,7 @@ const ProfilePage = () => {
         <div className="border-border bg-card text-card-foreground flex flex-col gap-6 rounded-none border p-6">
           <form onSubmit={handleUpdateUsername} className="flex flex-col gap-2">
             <Label htmlFor="username" className="text-muted-foreground">
-              Nome de Usuário
+              Nome de usuário
             </Label>
             <div className="flex gap-3">
               <div className="relative flex-1">
@@ -124,7 +124,6 @@ const ProfilePage = () => {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Seu nome de usuário"
                   className="pl-10"
                 />
               </div>
@@ -133,8 +132,7 @@ const ProfilePage = () => {
                 disabled={loadingUsername}
                 className="cursor-pointer font-medium"
               >
-                <Save data-icon="inline-start" />
-                {loadingUsername ? 'SALVANDO...' : 'SALVAR'}
+                {loadingUsername ? 'Salvando...' : 'Salvar'}
               </Button>
             </div>
           </form>
@@ -162,8 +160,7 @@ const ProfilePage = () => {
                 disabled={loadingEmail}
                 className="cursor-pointer font-medium"
               >
-                <Save data-icon="inline-start" />
-                {loadingEmail ? 'SALVANDO...' : 'SALVAR'}
+                {loadingEmail ? 'Salvando...' : 'Salvar'}
               </Button>
             </div>
           </form>
@@ -176,8 +173,7 @@ const ProfilePage = () => {
               variant="outline"
               className="w-full cursor-pointer py-5 font-semibold"
             >
-              <KeyRound data-icon="inline-start" />
-              REDEFINIR SENHA
+              Redefinir senha
             </Button>
           </div>
         </div>

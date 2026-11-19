@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import {
-  TrendingUp,
-  TrendingDown,
-  DollarSign,
-  ArrowUpRight,
-  ArrowDownLeft,
-  PlusCircle,
-  MinusCircle,
-  Loader2,
-  Plus,
-} from 'lucide-react';
+import { PlusCircle, MinusCircle, Loader2 } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -89,11 +79,22 @@ const DashboardPage = () => {
 
           if (byMonth && byMonth.length > 0) {
             setChartData(
-              byMonth.map((m) => ({
-                name: `${MONTH_NAMES[(m.month || 1) - 1]}/${String(m.year).slice(-2)}`,
-                Income: m.totalIncome || 0,
-                Expenses: m.totalExpense || 0,
-              }))
+              byMonth.map((m) => {
+                let label;
+                if (typeof m.month === 'string' && m.month.includes('-')) {
+                  const [yearStr, monthStr] = m.month.split('-');
+                  const monthIdx = Number(monthStr) - 1;
+                  label = `${MONTH_NAMES[monthIdx] || monthStr}/${yearStr.slice(-2)}`;
+                } else {
+                  label = `${MONTH_NAMES[(Number(m.month) || 1) - 1]}/${String(m.year ?? '').slice(-2)}`;
+                }
+
+                return {
+                  name: label,
+                  Income: Number(m.income ?? m.totalIncome ?? 0),
+                  Expenses: Number(m.expense ?? m.totalExpense ?? 0),
+                };
+              })
             );
           } else {
             setChartData([]);
@@ -187,8 +188,7 @@ const DashboardPage = () => {
               onClick={() => navigate('/transactions')}
               className="cursor-pointer"
             >
-              <Plus data-icon="inline-start" />
-              Nova Transação
+              Nova transação
             </Button>
           )}
         </div>
@@ -198,66 +198,42 @@ const DashboardPage = () => {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <span className="text-muted-foreground text-sm font-medium">
-              Saldo Atual
-            </span>
-            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
-              <DollarSign className="size-5" />
-            </div>
-          </div>
+          <span className="text-muted-foreground mb-3 block text-sm font-medium">
+            Saldo atual
+          </span>
           <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.balance)}
           </h2>
-          <p className="text-muted-foreground mt-2 text-xs">
-            Disponível em conta e carteira compartilhada
-          </p>
         </div>
 
         <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <span className="text-muted-foreground text-sm font-medium">
-              Total de Receitas
-            </span>
-            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
-              <TrendingUp className="size-5" />
-            </div>
-          </div>
+          <span className="text-muted-foreground mb-3 block text-sm font-medium">
+            Total de receitas
+          </span>
           <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.income)}
           </h2>
-          <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
-            <ArrowUpRight className="size-4" /> Acumulado da carteira
-          </p>
         </div>
 
         <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <span className="text-muted-foreground text-sm font-medium">
-              Total de Despesas
-            </span>
-            <div className="border-border bg-secondary text-foreground rounded-none border p-2">
-              <TrendingDown className="size-5" />
-            </div>
-          </div>
+          <span className="text-muted-foreground mb-3 block text-sm font-medium">
+            Total de despesas
+          </span>
           <h2 className="text-3xl font-semibold tracking-tight">
             {formatCurrency(metrics.expenses)}
           </h2>
-          <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
-            <ArrowDownLeft className="size-4" /> Acumulado da carteira
-          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="border-border bg-card text-card-foreground rounded-none border p-6 lg:col-span-2">
-          <h3 className="mb-6 text-lg font-medium">Fluxo de Caixa (Mensal)</h3>
+          <h3 className="mb-6 text-lg font-medium">Fluxo de caixa mensal</h3>
           <div className="h-[300px] w-full">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={chartData}
-                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  margin={{ top: 10, right: 16, left: 0, bottom: 0 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
@@ -274,6 +250,7 @@ const DashboardPage = () => {
                     axisLine={false}
                   />
                   <Tooltip
+                    formatter={(value) => formatCurrency(value)}
                     contentStyle={{
                       backgroundColor: 'var(--card)',
                       borderColor: 'var(--border)',
@@ -291,6 +268,7 @@ const DashboardPage = () => {
                     fillOpacity={0.12}
                     fill="var(--chart-1)"
                     strokeWidth={2}
+                    dot={{ r: 3 }}
                     isAnimationActive={false}
                   />
                   <Area
@@ -302,6 +280,7 @@ const DashboardPage = () => {
                     fillOpacity={0.08}
                     fill="var(--chart-3)"
                     strokeWidth={2}
+                    dot={{ r: 3 }}
                     isAnimationActive={false}
                   />
                 </AreaChart>
@@ -315,7 +294,7 @@ const DashboardPage = () => {
         </div>
 
         <div className="border-border bg-card text-card-foreground rounded-none border p-6">
-          <h3 className="mb-6 text-lg font-medium">Por Categoria</h3>
+          <h3 className="mb-6 text-lg font-medium">Por categoria</h3>
           {categoryData.length > 0 ? (
             <div className="flex flex-col gap-4">
               {categoryData.map((item) => {
@@ -353,7 +332,7 @@ const DashboardPage = () => {
 
       <div className="border-border bg-card text-card-foreground rounded-none border p-6">
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-medium">Lançamentos Recentes</h3>
+          <h3 className="text-lg font-medium">Lançamentos recentes</h3>
           <Button
             type="button"
             variant="outline"

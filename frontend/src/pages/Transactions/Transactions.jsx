@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
-  Plus,
   Pencil,
   Trash2,
   PlusCircle,
   MinusCircle,
   Loader2,
-  Tag,
-  ArrowLeftRight,
   X,
 } from 'lucide-react';
 import TransactionService from '@/services/TransactionService';
@@ -20,9 +17,9 @@ import AlertMessage from '@/components/ui/AlertMessage';
 
 const MONOCHROME_COLORS = [
   { label: 'Preto', value: '#171717' },
-  { label: 'Cinza Escuro', value: '#404040' },
-  { label: 'Cinza Médio', value: '#737373' },
-  { label: 'Cinza Claro', value: '#A3A3A3' },
+  { label: 'Cinza escuro', value: '#404040' },
+  { label: 'Cinza médio', value: '#737373' },
+  { label: 'Cinza claro', value: '#A3A3A3' },
 ];
 
 function getTodayIso() {
@@ -372,7 +369,6 @@ const TransactionsPage = () => {
             onClick={() => setActiveTab('transactions')}
             className="cursor-pointer"
           >
-            <ArrowLeftRight data-icon="inline-start" />
             Lançamentos
           </Button>
           <Button
@@ -381,7 +377,6 @@ const TransactionsPage = () => {
             onClick={() => setActiveTab('categories')}
             className="cursor-pointer"
           >
-            <Tag data-icon="inline-start" />
             Categorias
           </Button>
           {activeTab === 'transactions' && canEdit && (
@@ -404,8 +399,7 @@ const TransactionsPage = () => {
               }}
               className="cursor-pointer"
             >
-              <Plus data-icon="inline-start" />
-              Nova Transação
+              Nova transação
             </Button>
           )}
         </div>
@@ -420,7 +414,7 @@ const TransactionsPage = () => {
             <section className="border-border bg-card text-card-foreground rounded-none border p-6">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-medium">
-                  {editingTxId ? 'Editar Transação' : 'Nova Transação'}
+                  {editingTxId ? 'Editar transação' : 'Nova transação'}
                 </h2>
                 <Button
                   type="button"
@@ -548,10 +542,10 @@ const TransactionsPage = () => {
                     className="cursor-pointer"
                   >
                     {savingTx
-                      ? 'SALVANDO...'
+                      ? 'Salvando...'
                       : editingTxId
-                        ? 'ATUALIZAR'
-                        : 'ADICIONAR'}
+                        ? 'Atualizar'
+                        : 'Adicionar'}
                   </Button>
                 </div>
               </form>
@@ -604,7 +598,7 @@ const TransactionsPage = () => {
 
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="filter-start" className="text-muted-foreground">
-                  Data Inicial
+                  Data inicial
                 </Label>
                 <Input
                   id="filter-start"
@@ -618,7 +612,7 @@ const TransactionsPage = () => {
 
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="filter-end" className="text-muted-foreground">
-                  Data Final
+                  Data final
                 </Label>
                 <Input
                   id="filter-end"
@@ -644,7 +638,7 @@ const TransactionsPage = () => {
                   }
                   className="w-full cursor-pointer"
                 >
-                  Limpar Filtros
+                  Limpar filtros
                 </Button>
               </div>
             </div>
@@ -657,7 +651,7 @@ const TransactionsPage = () => {
               </h2>
               {!canEdit && (
                 <span className="text-muted-foreground text-xs">
-                  Modo somente leitura (Visualizador)
+                  Somente leitura
                 </span>
               )}
             </div>
@@ -785,7 +779,7 @@ const TransactionsPage = () => {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <section className="border-border bg-card text-card-foreground rounded-none border p-6">
             <h2 className="mb-4 text-lg font-medium">
-              {editingCategoryId ? 'Editar Categoria' : 'Nova Categoria'}
+              {editingCategoryId ? 'Editar categoria' : 'Nova categoria'}
             </h2>
 
             <form
@@ -864,10 +858,10 @@ const TransactionsPage = () => {
                   className="flex-1 cursor-pointer"
                 >
                   {savingCategory
-                    ? 'SALVANDO...'
+                    ? 'Salvando...'
                     : editingCategoryId
-                      ? 'ATUALIZAR'
-                      : 'CRIAR CATEGORIA'}
+                      ? 'Atualizar'
+                      : 'Criar categoria'}
                 </Button>
               </div>
             </form>
@@ -875,7 +869,7 @@ const TransactionsPage = () => {
 
           <section className="border-border bg-card text-card-foreground rounded-none border p-6 lg:col-span-2">
             <h2 className="mb-4 text-lg font-medium">
-              Categorias Cadastradas ({categories.length})
+              Categorias cadastradas ({categories.length})
             </h2>
 
             {categories.length > 0 ? (

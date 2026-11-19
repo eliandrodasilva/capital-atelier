@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import AuthService from '@/services/AuthService';
 import AlertMessage from '@/components/ui/AlertMessage';
@@ -76,7 +76,7 @@ const LoginPage = () => {
 
           <div className="mb-6">
             <h1 className="text-2xl font-medium tracking-tight">
-              Entrar na Sua Conta
+              Entrar na sua conta
             </h1>
           </div>
 
@@ -123,7 +123,6 @@ const LoginPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={credentials.password}
                   onChange={handleChange}
-                  placeholder="••••••••"
                   className="pr-10 pl-10"
                 />
 
@@ -148,8 +147,7 @@ const LoginPage = () => {
               disabled={loading}
               className="w-full cursor-pointer font-bold tracking-tight"
             >
-              {loading ? 'ENTRANDO...' : 'ENTRAR'}
-              {!loading && <ArrowRight data-icon="inline-end" />}
+              {loading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
         </div>
@@ -167,7 +165,7 @@ const LoginPage = () => {
             </p>
 
             <Button variant="outline" asChild className="mt-6 px-8">
-              <Link to="/register">CADASTRE-SE</Link>
+              <Link to="/register">Cadastre-se</Link>
             </Button>
           </div>
         </div>

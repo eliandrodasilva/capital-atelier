@@ -46,9 +46,7 @@ const ResetPasswordPage = () => {
 
     try {
       await authService.resetPassword(token, newPassword);
-      setMessage(
-        'Senha redefinida com sucesso! Redirecionando para o login...'
-      );
+      setMessage('Senha redefinida. Redirecionando para o login...');
       setTimeout(() => {
         navigate('/login');
       }, 2500);
@@ -79,18 +77,17 @@ const ResetPasswordPage = () => {
 
           <div className="mb-8">
             <h1 className="mb-3 text-2xl font-medium tracking-tight">
-              Definir Nova Senha
+              Definir nova senha
             </h1>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Crie uma nova senha forte para acessar sua conta. Ela deve ser
-              diferente das anteriores.
+              A nova senha deve ter pelo menos 6 caracteres.
             </p>
           </div>
 
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <Label htmlFor="new-password" className="text-muted-foreground">
-                Nova Senha
+                Nova senha
               </Label>
               <div className="relative">
                 <Lock className="text-muted-foreground absolute top-2.5 left-3 size-4" />
@@ -99,7 +96,6 @@ const ResetPasswordPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="••••••••"
                   className="pr-10 pl-10"
                 />
                 <button
@@ -121,7 +117,7 @@ const ResetPasswordPage = () => {
                 htmlFor="confirm-password"
                 className="text-muted-foreground"
               >
-                Confirmar Senha
+                Confirmar senha
               </Label>
               <div className="relative">
                 <Lock className="text-muted-foreground absolute top-2.5 left-3 size-4" />
@@ -130,7 +126,6 @@ const ResetPasswordPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="••••••••"
                   className="pr-10 pl-10"
                 />
               </div>
@@ -144,7 +139,7 @@ const ResetPasswordPage = () => {
               disabled={loading}
               className="w-full cursor-pointer font-bold tracking-tight"
             >
-              {loading ? 'SALVANDO...' : 'SALVAR NOVA SENHA'}
+              {loading ? 'Salvando...' : 'Salvar nova senha'}
             </Button>
 
             <div className="flex items-center justify-start pt-2">
@@ -153,7 +148,7 @@ const ResetPasswordPage = () => {
                 className="text-muted-foreground hover:text-foreground flex items-center text-sm"
               >
                 <ArrowLeft className="mr-2 size-4" />
-                Voltar para Login
+                Voltar para o login
               </Link>
             </div>
           </form>

@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Users,
-  UserPlus,
-  Check,
-  Loader2,
-} from 'lucide-react';
+import { Pencil, Trash2, Loader2 } from 'lucide-react';
 import WalletService from '@/services/WalletService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -248,11 +240,8 @@ const WalletsPage = () => {
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <header className="border-border border-b pb-4">
         <h1 className="text-3xl font-bold tracking-tight">
-          Carteiras e Compartilhamento
+          Carteiras e compartilhamento
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Gerencie suas carteiras financeiras e controle permissões de membros.
-        </p>
       </header>
 
       <AlertMessage message={error} variant="error" />
@@ -261,7 +250,7 @@ const WalletsPage = () => {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section className="border-border bg-card text-card-foreground rounded-none border p-6">
           <h2 className="mb-4 text-lg font-medium">
-            {editingWalletId ? 'Editar Carteira' : 'Nova Carteira'}
+            {editingWalletId ? 'Editar carteira' : 'Nova carteira'}
           </h2>
 
           <form onSubmit={handleSubmitWallet} className="flex flex-col gap-4">
@@ -312,12 +301,11 @@ const WalletsPage = () => {
                 disabled={savingWallet}
                 className="flex-1 cursor-pointer"
               >
-                <Plus data-icon="inline-start" />
                 {savingWallet
-                  ? 'SALVANDO...'
+                  ? 'Salvando...'
                   : editingWalletId
-                    ? 'ATUALIZAR'
-                    : 'CRIAR CARTEIRA'}
+                    ? 'Atualizar'
+                    : 'Criar carteira'}
               </Button>
             </div>
           </form>
@@ -325,7 +313,7 @@ const WalletsPage = () => {
 
         <section className="border-border bg-card text-card-foreground rounded-none border p-6 lg:col-span-2">
           <h2 className="mb-4 text-lg font-medium">
-            Minhas Carteiras ({wallets.length})
+            Minhas carteiras ({wallets.length})
           </h2>
 
           <div className="divide-border divide-y">
@@ -375,7 +363,6 @@ const WalletsPage = () => {
                         }}
                         className="cursor-pointer"
                       >
-                        <Check data-icon="inline-start" />
                         Usar
                       </Button>
                     )}
@@ -386,7 +373,6 @@ const WalletsPage = () => {
                       onClick={() => setSelectedWalletId(w.id)}
                       className="cursor-pointer"
                     >
-                      <Users data-icon="inline-start" />
                       Membros
                     </Button>
                     {isOwner && (
@@ -422,17 +408,9 @@ const WalletsPage = () => {
 
       {selectedWallet && (
         <section className="border-border bg-card text-card-foreground rounded-none border p-6">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h2 className="text-lg font-medium">
-                Membros — {selectedWallet.name}
-              </h2>
-              <p className="text-muted-foreground text-xs">
-                Compartilhe esta carteira com outros usuários cadastrados no
-                Capital Atelier.
-              </p>
-            </div>
-          </div>
+          <h2 className="mb-6 text-lg font-medium">
+            Membros de {selectedWallet.name}
+          </h2>
 
           {isSelectedOwner && (
             <form
@@ -478,8 +456,7 @@ const WalletsPage = () => {
                   disabled={inviting}
                   className="w-full cursor-pointer"
                 >
-                  <UserPlus data-icon="inline-start" />
-                  {inviting ? 'CONVIDANDO...' : 'ADICIONAR'}
+                  {inviting ? 'Convidando...' : 'Adicionar'}
                 </Button>
               </div>
             </form>

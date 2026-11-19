@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowRight, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import AuthService from '@/services/AuthService';
 import { Link } from 'react-router-dom';
 import PasswordStrengthMeter from '@/components/PasswordStrengthMeter/PasswordStrengthMeter';
@@ -53,7 +53,7 @@ const RegisterPage = () => {
         password: user.password,
       });
 
-      setSuccess('Conta criada com sucesso!');
+      setSuccess('Conta criada com sucesso.');
 
       setUser({
         username: '',
@@ -94,7 +94,7 @@ const RegisterPage = () => {
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <Label htmlFor="username" className="text-muted-foreground">
-                Nome de Usuário
+                Nome de usuário
               </Label>
 
               <div className="relative">
@@ -105,7 +105,6 @@ const RegisterPage = () => {
                   name="username"
                   value={user.username}
                   onChange={handleChange}
-                  placeholder="Digite seu nome de usuário"
                   className="pl-10"
                 />
               </div>
@@ -145,7 +144,6 @@ const RegisterPage = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={user.password}
                   onChange={handleChange}
-                  placeholder="Crie uma senha forte"
                   className="pr-10 pl-10"
                 />
 
@@ -170,7 +168,7 @@ const RegisterPage = () => {
                 htmlFor="confirmPassword"
                 className="text-muted-foreground"
               >
-                Confirmar Senha
+                Confirmar senha
               </Label>
 
               <div className="relative">
@@ -187,7 +185,6 @@ const RegisterPage = () => {
                       setError('As senhas não conferem.');
                     }
                   }}
-                  placeholder="Repita a senha"
                   className="pr-10 pl-10"
                 />
 
@@ -213,8 +210,7 @@ const RegisterPage = () => {
               disabled={loading}
               className="w-full cursor-pointer font-bold tracking-tight"
             >
-              {loading ? 'CRIANDO CONTA...' : 'CRIAR CONTA'}
-              {!loading && <ArrowRight data-icon="inline-end" />}
+              {loading ? 'Criando conta...' : 'Criar conta'}
             </Button>
           </form>
         </div>
@@ -227,13 +223,8 @@ const RegisterPage = () => {
               conta cadastrada?
             </h2>
 
-            <p className="text-muted-foreground max-w-[280px] text-sm leading-relaxed">
-              Acesse sua conta para continuar sua jornada financeira e gerenciar
-              seus recursos com facilidade.
-            </p>
-
-            <Button variant="outline" asChild className="mt-6 px-8">
-              <Link to="/login">FAÇA LOGIN</Link>
+            <Button variant="outline" asChild className="mt-2 px-8">
+              <Link to="/login">Entrar</Link>
             </Button>
           </div>
         </div>

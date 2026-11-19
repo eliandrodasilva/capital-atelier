@@ -71,54 +71,42 @@ const Sidebar = ({ wallets = [], activeWallet = null, onSelectWallet }) => {
         </div>
       )}
 
-      <div className="custom-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto py-6">
-        <div className="px-4">
-          <span className="text-muted-foreground mb-3 block px-2 text-[10px] font-bold tracking-wider uppercase">
-            Menu
-          </span>
+      <div className="custom-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-4">
+        <nav className="flex flex-col gap-1">
+          <NavItem
+            icon={<LayoutDashboard />}
+            label="Dashboard"
+            active={location.pathname === '/'}
+            onClick={() => navigate('/')}
+          />
+          <NavItem
+            icon={<ArrowLeftRight />}
+            label="Transações"
+            active={location.pathname === '/transactions'}
+            onClick={() => navigate('/transactions')}
+          />
+          <NavItem
+            icon={<WalletCards />}
+            label="Carteiras"
+            active={location.pathname === '/wallets'}
+            onClick={() => navigate('/wallets')}
+          />
+        </nav>
 
-          <nav className="flex flex-col gap-1">
-            <NavItem
-              icon={<LayoutDashboard />}
-              label="Dashboard"
-              active={location.pathname === '/'}
-              onClick={() => navigate('/')}
-            />
-            <NavItem
-              icon={<ArrowLeftRight />}
-              label="Transações"
-              active={location.pathname === '/transactions'}
-              onClick={() => navigate('/transactions')}
-            />
-            <NavItem
-              icon={<WalletCards />}
-              label="Carteiras"
-              active={location.pathname === '/wallets'}
-              onClick={() => navigate('/wallets')}
-            />
-          </nav>
-        </div>
-
-        <div className="px-4">
-          <span className="text-muted-foreground mb-3 block px-2 text-[10px] font-bold tracking-wider uppercase">
-            Sistema
-          </span>
-
-          <nav className="flex flex-col gap-1">
-            <NavItem
-              icon={<User />}
-              label="Perfil"
-              active={location.pathname === '/profile'}
-              onClick={() => navigate('/profile')}
-            />
-            <NavItem
-              icon={<Settings />}
-              label="Configurações"
-              active={location.pathname === '/settings'}
-              onClick={() => navigate('/settings')}
-            />
-          </nav>
-        </div>
+        <nav className="border-sidebar-border flex flex-col gap-1 border-t pt-4">
+          <NavItem
+            icon={<User />}
+            label="Perfil"
+            active={location.pathname === '/profile'}
+            onClick={() => navigate('/profile')}
+          />
+          <NavItem
+            icon={<Settings />}
+            label="Configurações"
+            active={location.pathname === '/settings'}
+            onClick={() => navigate('/settings')}
+          />
+        </nav>
       </div>
 
       <div className="border-sidebar-border border-t p-4">

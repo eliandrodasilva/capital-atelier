@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, Eye, EyeOff, ArrowLeft, KeyRound } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserService from '@/services/UserService';
 import AlertMessage from '@/components/ui/AlertMessage';
@@ -54,7 +54,7 @@ const ChangePasswordPage = () => {
         newPassword,
       });
 
-      setSuccess('Senha alterada com sucesso!');
+      setSuccess('Senha alterada.');
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -75,12 +75,7 @@ const ChangePasswordPage = () => {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <header className="border-border flex items-center justify-between border-b pb-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Redefinir Senha</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Digite sua senha atual e escolha uma nova senha segura.
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold tracking-tight">Redefinir senha</h1>
 
         <Button
           onClick={() => navigate('/profile')}
@@ -96,7 +91,7 @@ const ChangePasswordPage = () => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <Label htmlFor="oldPassword" className="text-muted-foreground">
-              Senha Atual
+              Senha atual
             </Label>
             <div className="relative">
               <Lock className="text-muted-foreground absolute top-2.5 left-3 size-4" />
@@ -105,7 +100,6 @@ const ChangePasswordPage = () => {
                 type={showOldPassword ? 'text' : 'password'}
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                placeholder="••••••••"
                 className="pr-10 pl-10"
               />
               <button
@@ -124,7 +118,7 @@ const ChangePasswordPage = () => {
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="newPassword" className="text-muted-foreground">
-              Nova Senha
+              Nova senha
             </Label>
             <div className="relative">
               <Lock className="text-muted-foreground absolute top-2.5 left-3 size-4" />
@@ -133,7 +127,6 @@ const ChangePasswordPage = () => {
                 type={showNewPassword ? 'text' : 'password'}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Nova senha forte"
                 className="pr-10 pl-10"
               />
               <button
@@ -153,7 +146,7 @@ const ChangePasswordPage = () => {
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="confirmPassword" className="text-muted-foreground">
-              Confirmar Nova Senha
+              Confirmar nova senha
             </Label>
             <div className="relative">
               <Lock className="text-muted-foreground absolute top-2.5 left-3 size-4" />
@@ -162,7 +155,6 @@ const ChangePasswordPage = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repita a nova senha"
                 className="pr-10 pl-10"
               />
               <button
@@ -187,8 +179,7 @@ const ChangePasswordPage = () => {
             disabled={loading}
             className="w-full cursor-pointer font-bold"
           >
-            <KeyRound data-icon="inline-start" />
-            {loading ? 'ALTERANDO SENHA...' : 'SALVAR NOVA SENHA'}
+            {loading ? 'Alterando senha...' : 'Salvar nova senha'}
           </Button>
         </form>
       </main>

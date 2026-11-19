@@ -31,7 +31,7 @@ const ForgotPasswordPage = () => {
 
     try {
       await authService.forgotPassword(email);
-      setMessage('Link de redefinição enviado para o e-mail informado!');
+      setMessage('Link de redefinição enviado para o e-mail informado.');
       setEmail('');
     } catch (err) {
       setError(
@@ -60,11 +60,10 @@ const ForgotPasswordPage = () => {
 
           <div className="mb-8">
             <h1 className="mb-3 text-2xl font-medium tracking-tight">
-              Recuperar Senha
+              Recuperar senha
             </h1>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Esqueceu sua senha? Não se preocupe. Digite o e-mail associado à
-              sua conta e enviaremos um link para redefini-la.
+              Informe o e-mail da sua conta para receber o link de redefinição.
             </p>
           </div>
 
@@ -94,7 +93,7 @@ const ForgotPasswordPage = () => {
               disabled={loading}
               className="w-full cursor-pointer font-bold tracking-tight"
             >
-              {loading ? 'ENVIANDO...' : 'ENVIAR LINK'}
+              {loading ? 'Enviando...' : 'Enviar link'}
             </Button>
 
             <div className="flex items-center justify-start pt-2">
@@ -103,7 +102,7 @@ const ForgotPasswordPage = () => {
                 className="text-muted-foreground hover:text-foreground flex items-center text-sm"
               >
                 <ArrowLeft className="mr-2 size-4" />
-                Voltar para Login
+                Voltar para o login
               </Link>
             </div>
           </form>

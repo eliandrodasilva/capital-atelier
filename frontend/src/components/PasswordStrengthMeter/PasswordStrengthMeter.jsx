@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 
 const STRENGTH_CONFIG = {
   0: {
-    label: 'Muito Fraca',
+    label: 'Muito fraca',
     score: 20,
     color: 'bg-muted-foreground/50',
     textColor: 'text-muted-foreground',
@@ -27,7 +27,7 @@ const STRENGTH_CONFIG = {
     textColor: 'text-foreground',
   },
   4: {
-    label: 'Muito Forte',
+    label: 'Muito forte',
     score: 100,
     color: 'bg-primary',
     textColor: 'text-foreground',
