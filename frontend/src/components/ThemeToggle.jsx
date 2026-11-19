@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useTheme } from '@/hooks/useTheme';
+import { getResolvedTheme, subscribeTheme, toggleTheme } from '@/lib/theme';
 
 export function ThemeToggle({ className }) {
-  const { resolvedTheme, toggleTheme } = useTheme();
+  const [resolvedTheme, setResolvedTheme] = useState(getResolvedTheme);
+
+  useEffect(() => subscribeTheme(setResolvedTheme), []);
+
   const isDark = resolvedTheme === 'dark';
 
   return (
