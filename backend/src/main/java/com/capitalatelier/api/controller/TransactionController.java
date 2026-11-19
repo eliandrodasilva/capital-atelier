@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/wallets/{walletId}/transactions")
+@RequestMapping("/api/v1/wallets/{walletId}/transactions")
 @CrossOrigin(origins = "*")
 public class TransactionController {
 

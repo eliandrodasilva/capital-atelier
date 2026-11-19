@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/wallets/{walletId}/summary")
+@RequestMapping("/api/v1/wallets/{walletId}/summary")
 @CrossOrigin(origins = "*")
 public class DashboardController {
 
