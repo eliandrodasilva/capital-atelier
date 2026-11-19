@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LayoutDashboard,
+  ArrowLeftRight,
+  WalletCards,
   Settings,
   User,
   LogOut,
@@ -8,19 +10,27 @@ import {
   Moon,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '@/hooks/useTheme';
+import { getResolvedTheme, subscribeTheme, toggleTheme } from '@/lib/theme';
 import { BrandLogo } from '@/components/BrandLogo';
 
-const Sidebar = () => {
+const ROLE_LABELS = {
+  OWNER: 'Proprietário',
+  EDITOR: 'Editor',
+  VIEWER: 'Visualizador',
+};
+
+const Sidebar = ({ wallets = [], activeWallet = null, onSelectWallet }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { resolvedTheme, toggleTheme } = useTheme();
+  const [resolvedTheme, setResolvedTheme] = useState(getResolvedTheme);
+  useEffect(() => subscribeTheme(setResolvedTheme), []);
   const isDark = resolvedTheme === 'dark';
   const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
   const handleLogout = () => {
     localStorage.removeItem('app-token');
     localStorage.removeItem('usuario');
+    localStorage.removeItem('capital-atelier-active-wallet');
     navigate('/login');
   };
 
@@ -32,6 +42,34 @@ const Sidebar = () => {
           Capital Atelier
         </span>
       </div>
+
+      {wallets.length > 0 && (
+        <div className="border-sidebar-border border-b px-4 py-3">
+          <label
+            htmlFor="active-wallet-select"
+            className="text-muted-foreground mb-1.5 block text-[10px] font-bold tracking-wider uppercase"
+          >
+            Carteira ativa
+          </label>
+          <select
+            id="active-wallet-select"
+            value={activeWallet?.id ?? ''}
+            onChange={(e) => onSelectWallet?.(e.target.value)}
+            className="border-sidebar-border bg-background text-foreground focus-visible:border-ring focus-visible:ring-ring/50 h-9 w-full rounded-none border px-2 text-sm outline-none focus-visible:ring-3"
+          >
+            {wallets.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.name}
+              </option>
+            ))}
+          </select>
+          {activeWallet?.role && (
+            <p className="text-muted-foreground mt-1 text-[11px]">
+              Papel: {ROLE_LABELS[activeWallet.role] || activeWallet.role}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="custom-scrollbar flex flex-1 flex-col gap-6 overflow-y-auto py-6">
         <div className="px-4">
@@ -45,6 +83,18 @@ const Sidebar = () => {
               label="Dashboard"
               active={location.pathname === '/'}
               onClick={() => navigate('/')}
+            />
+            <NavItem
+              icon={<ArrowLeftRight />}
+              label="Transações"
+              active={location.pathname === '/transactions'}
+              onClick={() => navigate('/transactions')}
+            />
+            <NavItem
+              icon={<WalletCards />}
+              label="Carteiras"
+              active={location.pathname === '/wallets'}
+              onClick={() => navigate('/wallets')}
             />
           </nav>
         </div>
@@ -128,6 +178,7 @@ const Sidebar = () => {
 function NavItem({ icon, label, active = false, onClick }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`group flex w-full cursor-pointer items-center rounded-none p-2 text-left ${
         active

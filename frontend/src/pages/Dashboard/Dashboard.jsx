@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
   TrendingUp,
   TrendingDown,
   DollarSign,
-  Loader2,
   ArrowUpRight,
   ArrowDownLeft,
   PlusCircle,
   MinusCircle,
+  Loader2,
+  Plus,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -19,97 +21,130 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import api from '@/config/axiosConfig';
+import DashboardService from '@/services/DashboardService';
+import TransactionService from '@/services/TransactionService';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import AlertMessage from '@/components/ui/AlertMessage';
+
+const MONTH_NAMES = [
+  'Jan',
+  'Fev',
+  'Mar',
+  'Abr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Set',
+  'Out',
+  'Nov',
+  'Dez',
+];
 
 const DashboardPage = () => {
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { activeWallet, loadingWallets, walletError, canEdit } =
+    useOutletContext();
+
   const [metrics, setMetrics] = useState({
     balance: 0,
     income: 0,
     expenses: 0,
   });
   const [chartData, setChartData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    async function loadDashboardData() {
+    if (loadingWallets || !activeWallet) return;
+
+    let cancelled = false;
+
+    const loadDashboardData = async () => {
       try {
-        setLoading(true);
+        const [summaryRes, txRes] = await Promise.all([
+          DashboardService.getSummary(activeWallet.id),
+          TransactionService.list(activeWallet.id, {
+            page: 0,
+            size: 5,
+            sort: 'date,desc',
+          }),
+        ]);
 
-        let walletsRes = await api.get('/api/wallets');
-        let wallets = walletsRes.data || [];
+        if (cancelled) return;
+        setError('');
 
-        if (wallets.length === 0) {
-          const newWalletRes = await api.post('/api/wallets', {
-            name: 'Minha Carteira',
-            description: 'Carteira principal de controle financeiro',
+        if (summaryRes.data) {
+          const { balance, totalIncome, totalExpense, byMonth, byCategory } =
+            summaryRes.data;
+
+          setMetrics({
+            balance: balance || 0,
+            income: totalIncome || 0,
+            expenses: totalExpense || 0,
           });
-          if (newWalletRes.data) {
-            wallets = [newWalletRes.data];
+
+          if (byMonth && byMonth.length > 0) {
+            setChartData(
+              byMonth.map((m) => ({
+                name: `${MONTH_NAMES[(m.month || 1) - 1]}/${String(m.year).slice(-2)}`,
+                Income: m.totalIncome || 0,
+                Expenses: m.totalExpense || 0,
+              }))
+            );
+          } else {
+            setChartData([]);
           }
+
+          setCategoryData(byCategory || []);
         }
 
-        const activeWallet = wallets[0];
-
-        if (activeWallet) {
-          const summaryRes = await api.get(
-            `/api/wallets/${activeWallet.id}/summary`
-          );
-          const summary = summaryRes.data;
-
-          if (summary) {
-            setMetrics({
-              balance: Number(summary.balance) || 0,
-              income: Number(summary.totalIncome) || 0,
-              expenses: Number(summary.totalExpense) || 0,
-            });
-
-            if (summary.byMonth && summary.byMonth.length > 0) {
-              setChartData(
-                summary.byMonth.map((m) => ({
-                  name: m.month,
-                  Income: Number(m.income) || 0,
-                  Expenses: Number(m.expense) || 0,
-                }))
-              );
-            } else {
-              setChartData([]);
-            }
-          }
-
-          const transRes = await api.get(
-            `/api/wallets/${activeWallet.id}/transactions?page=0&size=5&sort=date,desc`
-          );
-          const transContent = transRes.data?.content || [];
-
+        if (txRes.data && txRes.data.content) {
           setTransactions(
-            transContent.map((t) => ({
+            txRes.data.content.map((t) => ({
               id: t.id,
-              description: t.description || 'Sem descrição',
-              value: Number(t.amount) || 0,
-              type: t.type ? t.type.toLowerCase() : 'expense',
-              date: t.date,
+              description: t.description || t.categoryName || 'Lançamento',
+              categoryName: t.categoryName,
+              value: t.amount || 0,
+              type: t.type === 'INCOME' ? 'income' : 'expense',
+              date: t.date ? t.date.split('-').reverse().join('/') : 'Sem data',
             }))
           );
+        } else {
+          setTransactions([]);
         }
       } catch (err) {
-        console.error('Erro ao carregar dados do dashboard:', err);
+        if (!cancelled) {
+          setError(
+            err?.response?.data?.message ||
+              'Erro ao carregar dados do dashboard.'
+          );
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-    }
+    };
 
     loadDashboardData();
-  }, []);
 
-  const formatCurrency = (value) => {
+    return () => {
+      cancelled = true;
+    };
+  }, [activeWallet, loadingWallets]);
+
+  const formatCurrency = (val) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-    }).format(value);
+    }).format(val);
   };
 
-  if (loading) {
+  if (loadingWallets || (Boolean(activeWallet) && loading)) {
     return (
       <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4">
         <Loader2 className="text-muted-foreground size-10 animate-spin" />
@@ -120,11 +155,46 @@ const DashboardPage = () => {
     );
   }
 
+  const totalByCategory = categoryData.reduce(
+    (acc, item) => acc + Number(item.total || 0),
+    0
+  );
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-      <header className="border-border border-b pb-4">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+      <header className="border-border flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          {activeWallet && (
+            <p className="text-muted-foreground mt-1 text-sm">
+              Carteira: {activeWallet.name}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate('/wallets')}
+            className="cursor-pointer"
+          >
+            Carteiras
+          </Button>
+          {canEdit && (
+            <Button
+              type="button"
+              onClick={() => navigate('/transactions')}
+              className="cursor-pointer"
+            >
+              <Plus data-icon="inline-start" />
+              Nova Transação
+            </Button>
+          )}
+        </div>
       </header>
+
+      <AlertMessage message={walletError || error} variant="error" />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">
@@ -157,7 +227,7 @@ const DashboardPage = () => {
             {formatCurrency(metrics.income)}
           </h2>
           <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
-            <ArrowUpRight className="size-4" /> Período atual de 30 dias
+            <ArrowUpRight className="size-4" /> Acumulado da carteira
           </p>
         </div>
 
@@ -174,70 +244,108 @@ const DashboardPage = () => {
             {formatCurrency(metrics.expenses)}
           </h2>
           <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
-            <ArrowDownLeft className="size-4" /> Período atual de 30 dias
+            <ArrowDownLeft className="size-4" /> Acumulado da carteira
           </p>
         </div>
       </div>
 
-      <div className="border-border bg-card text-card-foreground rounded-none border p-6">
-        <h3 className="mb-6 text-lg font-medium">Fluxo de Caixa (Mensal)</h3>
-        <div className="h-[300px] w-full">
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={chartData}
-                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis
-                  dataKey="name"
-                  stroke="var(--muted-foreground)"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke="var(--muted-foreground)"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'var(--card)',
-                    borderColor: 'var(--border)',
-                    borderRadius: '0px',
-                    color: 'var(--foreground)',
-                  }}
-                  labelStyle={{ color: 'var(--muted-foreground)' }}
-                />
-                <Legend verticalAlign="top" height={36} iconType="square" />
-                <Area
-                  type="monotone"
-                  dataKey="Income"
-                  name="Receitas"
-                  stroke="var(--chart-1)"
-                  fillOpacity={0.12}
-                  fill="var(--chart-1)"
-                  strokeWidth={2}
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="Expenses"
-                  name="Despesas"
-                  stroke="var(--chart-3)"
-                  strokeDasharray="4 4"
-                  fillOpacity={0.08}
-                  fill="var(--chart-3)"
-                  strokeWidth={2}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="border-border bg-card text-card-foreground rounded-none border p-6 lg:col-span-2">
+          <h3 className="mb-6 text-lg font-medium">Fluxo de Caixa (Mensal)</h3>
+          <div className="h-[300px] w-full">
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={chartData}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis
+                    dataKey="name"
+                    stroke="var(--muted-foreground)"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="var(--muted-foreground)"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'var(--card)',
+                      borderColor: 'var(--border)',
+                      borderRadius: '0px',
+                      color: 'var(--foreground)',
+                    }}
+                    labelStyle={{ color: 'var(--muted-foreground)' }}
+                  />
+                  <Legend verticalAlign="top" height={36} iconType="square" />
+                  <Area
+                    type="monotone"
+                    dataKey="Income"
+                    name="Receitas"
+                    stroke="var(--chart-1)"
+                    fillOpacity={0.12}
+                    fill="var(--chart-1)"
+                    strokeWidth={2}
+                    isAnimationActive={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="Expenses"
+                    name="Despesas"
+                    stroke="var(--chart-3)"
+                    strokeDasharray="4 4"
+                    fillOpacity={0.08}
+                    fill="var(--chart-3)"
+                    strokeWidth={2}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="text-muted-foreground flex h-full flex-col items-center justify-center text-sm">
+                <p>Nenhuma movimentação mensal registrada ainda.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="border-border bg-card text-card-foreground rounded-none border p-6">
+          <h3 className="mb-6 text-lg font-medium">Por Categoria</h3>
+          {categoryData.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {categoryData.map((item) => {
+                const amount = Number(item.total || 0);
+                const pct =
+                  totalByCategory > 0
+                    ? Math.round((amount / totalByCategory) * 100)
+                    : 0;
+
+                return (
+                  <div
+                    key={item.categoryId ?? item.categoryName}
+                    className="flex flex-col gap-1.5"
+                  >
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="truncate font-medium">
+                        {item.categoryName || 'Sem categoria'}
+                      </span>
+                      <span className="text-muted-foreground shrink-0 text-xs">
+                        {formatCurrency(amount)} ({pct}%)
+                      </span>
+                    </div>
+                    <Progress value={pct} />
+                  </div>
+                );
+              })}
+            </div>
           ) : (
-            <div className="text-muted-foreground flex h-full flex-col items-center justify-center text-sm">
-              <p>Nenhuma movimentação mensal registrada ainda.</p>
+            <div className="text-muted-foreground flex h-[260px] items-center justify-center text-center text-sm">
+              <p>Nenhuma categoria movimentada ainda.</p>
             </div>
           )}
         </div>
@@ -246,6 +354,15 @@ const DashboardPage = () => {
       <div className="border-border bg-card text-card-foreground rounded-none border p-6">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-lg font-medium">Lançamentos Recentes</h3>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/transactions')}
+            className="cursor-pointer"
+          >
+            Ver todos
+          </Button>
         </div>
 
         <div className="overflow-x-auto">
@@ -255,6 +372,9 @@ const DashboardPage = () => {
                 <tr>
                   <th scope="col" className="px-6 py-4">
                     Descrição
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Categoria
                   </th>
                   <th scope="col" className="px-6 py-4">
                     Data
@@ -274,6 +394,9 @@ const DashboardPage = () => {
                         <MinusCircle className="text-muted-foreground size-5 shrink-0" />
                       )}
                       {t.description}
+                    </td>
+                    <td className="text-muted-foreground px-6 py-4">
+                      {t.categoryName || 'Sem categoria'}
                     </td>
                     <td className="text-muted-foreground px-6 py-4">
                       {t.date}
