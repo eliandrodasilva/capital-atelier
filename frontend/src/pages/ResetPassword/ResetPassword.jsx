@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Wallet, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import AuthService from '@/services/AuthService';
 import AlertMessage from '@/components/ui/AlertMessage';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { BrandLogo } from '@/components/BrandLogo';
 
 const authService = new AuthService();
 
@@ -70,7 +71,7 @@ const ResetPasswordPage = () => {
       <div className="border-border bg-card text-card-foreground w-full max-w-[450px] overflow-hidden rounded-none border">
         <div className="flex flex-col justify-center p-8 md:p-12">
           <div className="mb-8 flex items-center gap-2">
-            <Wallet className="size-6" />
+            <BrandLogo />
             <span className="text-lg font-semibold tracking-tight">
               Capital Atelier
             </span>

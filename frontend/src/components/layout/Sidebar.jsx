@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Wallet,
   LayoutDashboard,
   Settings,
   User,
@@ -10,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
+import { BrandLogo } from '@/components/BrandLogo';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const Sidebar = () => {
   return (
     <aside className="border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r">
       <div className="border-sidebar-border flex h-20 items-center gap-3 border-b px-6">
-        <Wallet className="text-sidebar-foreground size-6 shrink-0" />
+        <BrandLogo className="text-sidebar-foreground size-6 shrink-0" />
         <span className="text-sidebar-foreground overflow-hidden text-lg font-semibold tracking-tight whitespace-nowrap">
           Capital Atelier
         </span>

@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowRight, Wallet, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import AuthService from '@/services/AuthService';
 import AlertMessage from '@/components/ui/AlertMessage';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { BrandLogo } from '@/components/BrandLogo';
 
 const authService = new AuthService();
 
@@ -67,7 +68,7 @@ const LoginPage = () => {
       <div className="border-border bg-card text-card-foreground grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-none border md:grid-cols-2">
         <div className="flex flex-col justify-center p-8 md:p-12">
           <div className="mb-6 flex items-center gap-2">
-            <Wallet className="size-6" />
+            <BrandLogo />
             <span className="text-lg font-semibold tracking-tight">
               Capital Atelier
             </span>
