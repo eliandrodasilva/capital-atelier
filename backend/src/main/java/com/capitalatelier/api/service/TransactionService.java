@@ -1,5 +1,6 @@
 package com.capitalatelier.api.service;
 
+import com.capitalatelier.api.dto.RealtimeEventDTO;
 import com.capitalatelier.api.dto.TransactionRequestDTO;
 import com.capitalatelier.api.dto.TransactionResponseDTO;
 import com.capitalatelier.api.enums.TransactionType;
@@ -11,6 +12,7 @@ import com.capitalatelier.api.repository.CategoryRepository;
 import com.capitalatelier.api.repository.TransactionRepository;
 import com.capitalatelier.api.repository.WalletRepository;
 import com.capitalatelier.api.util.SecurityUtils;
+import java.time.Instant;
 import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +27,17 @@ public class TransactionService {
 	private final CategoryRepository categoryRepository;
 	private final WalletService walletService;
 	private final SecurityUtils securityUtils;
+	private final RealtimeService realtimeService;
 
 	public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository,
-			CategoryRepository categoryRepository, WalletService walletService, SecurityUtils securityUtils) {
+			CategoryRepository categoryRepository, WalletService walletService, SecurityUtils securityUtils,
+			RealtimeService realtimeService) {
 		this.transactionRepository = transactionRepository;
 		this.walletRepository = walletRepository;
 		this.categoryRepository = categoryRepository;
 		this.walletService = walletService;
 		this.securityUtils = securityUtils;
+		this.realtimeService = realtimeService;
 	}
 
 	public Page<TransactionResponseDTO> getTransactions(Long walletId, TransactionType type, Long categoryId,
@@ -73,7 +78,10 @@ public class TransactionService {
 		transaction.setDescription(dto.description());
 		transaction.setDate(dto.date());
 
-		return toDTO(transactionRepository.save(transaction));
+		TransactionResponseDTO saved = toDTO(transactionRepository.save(transaction));
+		realtimeService.publish(walletId, new RealtimeEventDTO("TRANSACTION_CREATED", walletId, user.getUsername(),
+				"Nova transação registrada por " + user.getUsername(), Instant.now()));
+		return saved;
 	}
 
 	public TransactionResponseDTO getTransaction(Long walletId, Long id) {
@@ -112,7 +120,10 @@ public class TransactionService {
 		transaction.setDate(dto.date());
 		transaction.setCategory(category);
 
-		return toDTO(transactionRepository.save(transaction));
+		TransactionResponseDTO updated = toDTO(transactionRepository.save(transaction));
+		realtimeService.publish(walletId, new RealtimeEventDTO("TRANSACTION_UPDATED", walletId, user.getUsername(),
+				"Transação atualizada por " + user.getUsername(), Instant.now()));
+		return updated;
 	}
 
 	@Transactional
@@ -127,6 +138,8 @@ public class TransactionService {
 				.orElseThrow(() -> new RuntimeException("Transação não encontrada"));
 
 		transactionRepository.delete(transaction);
+		realtimeService.publish(walletId, new RealtimeEventDTO("TRANSACTION_DELETED", walletId, user.getUsername(),
+				"Transação removida por " + user.getUsername(), Instant.now()));
 	}
 
 	private TransactionResponseDTO toDTO(Transaction t) {

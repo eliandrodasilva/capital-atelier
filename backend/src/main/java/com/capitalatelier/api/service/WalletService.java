@@ -1,6 +1,7 @@
 package com.capitalatelier.api.service;
 
 import com.capitalatelier.api.dto.AddMemberRequestDTO;
+import com.capitalatelier.api.dto.RealtimeEventDTO;
 import com.capitalatelier.api.dto.UpdateMemberRoleDTO;
 import com.capitalatelier.api.dto.WalletMemberResponseDTO;
 import com.capitalatelier.api.dto.WalletRequestDTO;
@@ -13,6 +14,7 @@ import com.capitalatelier.api.repository.UserRepository;
 import com.capitalatelier.api.repository.WalletMemberRepository;
 import com.capitalatelier.api.repository.WalletRepository;
 import com.capitalatelier.api.util.SecurityUtils;
+import java.time.Instant;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,6 +34,9 @@ public class WalletService {
 
 	@Autowired
 	private SecurityUtils securityUtils;
+
+	@Autowired
+	private RealtimeService realtimeService;
 
 	public List<WalletResponseDTO> getWallets() {
 		User user = securityUtils.getAuthenticatedUser();
@@ -122,7 +127,10 @@ public class WalletService {
 		member.setUser(memberUser);
 		member.setRole(dto.role());
 
-		return toMemberDTO(walletMemberRepository.save(member));
+		WalletMemberResponseDTO updated = toMemberDTO(walletMemberRepository.save(member));
+		realtimeService.publish(walletId, new RealtimeEventDTO("MEMBER_UPDATED", walletId, user.getUsername(),
+				"Permissão de membro atualizada por " + user.getUsername(), Instant.now()));
+		return updated;
 	}
 
 	public WalletMemberResponseDTO updateMemberRole(Long walletId, Long targetUserId, UpdateMemberRoleDTO dto) {
@@ -137,7 +145,10 @@ public class WalletService {
 
 		member.setRole(dto.role());
 
-		return toMemberDTO(walletMemberRepository.save(member));
+		WalletMemberResponseDTO updated = toMemberDTO(walletMemberRepository.save(member));
+		realtimeService.publish(walletId, new RealtimeEventDTO("MEMBER_UPDATED", walletId, user.getUsername(),
+				"Permissão de membro atualizada por " + user.getUsername(), Instant.now()));
+		return updated;
 	}
 
 	public void removeMember(Long walletId, Long targetUserId) {
@@ -152,6 +163,8 @@ public class WalletService {
 		}
 
 		walletMemberRepository.deleteByWalletIdAndUserId(walletId, targetUserId);
+		realtimeService.publish(walletId, new RealtimeEventDTO("MEMBER_UPDATED", walletId, user.getUsername(),
+				"Membro removido por " + user.getUsername(), Instant.now()));
 	}
 
 	public void checkOwnerAccess(Wallet wallet, Long userId) {
