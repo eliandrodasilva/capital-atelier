@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import WalletService from '@/services/WalletService';
+import { subscribeWalletEvents } from '@/lib/realtime';
 
 const STORAGE_KEY = 'capital-atelier-active-wallet';
 
@@ -19,6 +20,9 @@ const DashboardLayout = () => {
   });
   const [loadingWallets, setLoadingWallets] = useState(true);
   const [walletError, setWalletError] = useState('');
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
+  const [realtimeVersion, setRealtimeVersion] = useState(0);
+  const [lastRealtimeEvent, setLastRealtimeEvent] = useState(null);
 
   const applyWalletsResult = useCallback((list) => {
     setWallets(list);
@@ -104,12 +108,31 @@ const DashboardLayout = () => {
   const selectWallet = useCallback((id) => {
     const numericId = Number(id);
     setActiveWalletId(numericId);
+    setLastRealtimeEvent(null);
     try {
       localStorage.setItem(STORAGE_KEY, String(numericId));
     } catch {
       // Ignore storage errors
     }
   }, []);
+
+  useEffect(() => {
+    if (!token || !activeWalletId) return;
+
+    const unsubscribe = subscribeWalletEvents(activeWalletId, {
+      onConnected: () => setRealtimeConnected(true),
+      onDisconnect: () => setRealtimeConnected(false),
+      onEvent: (event) => {
+        setLastRealtimeEvent(event);
+        setRealtimeVersion((v) => v + 1);
+      },
+    });
+
+    return () => {
+      unsubscribe();
+      setRealtimeConnected(false);
+    };
+  }, [token, activeWalletId]);
 
   if (!token) {
     return <Navigate to="/login" replace />;
@@ -128,6 +151,9 @@ const DashboardLayout = () => {
     walletError,
     isOwner,
     canEdit,
+    realtimeConnected,
+    realtimeVersion,
+    lastRealtimeEvent,
     selectWallet,
     refreshWallets,
   };

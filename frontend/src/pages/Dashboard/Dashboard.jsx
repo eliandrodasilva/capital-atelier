@@ -34,8 +34,15 @@ const MONTH_NAMES = [
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const { activeWallet, loadingWallets, walletError, canEdit } =
-    useOutletContext();
+  const {
+    activeWallet,
+    loadingWallets,
+    walletError,
+    canEdit,
+    realtimeConnected,
+    realtimeVersion,
+    lastRealtimeEvent,
+  } = useOutletContext();
 
   const [metrics, setMetrics] = useState({
     balance: 0,
@@ -136,7 +143,7 @@ const DashboardPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [activeWallet, loadingWallets]);
+  }, [activeWallet, loadingWallets, realtimeVersion]);
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -165,7 +172,14 @@ const DashboardPage = () => {
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
       <header className="border-border flex flex-wrap items-center justify-between gap-4 border-b pb-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            {realtimeConnected && (
+              <span className="border-border bg-secondary text-muted-foreground border px-2 py-0.5 text-[11px] font-medium">
+                Tempo real ativo
+              </span>
+            )}
+          </div>
           {activeWallet && (
             <p className="text-muted-foreground mt-1 text-sm">
               Carteira: {activeWallet.name}
@@ -195,6 +209,9 @@ const DashboardPage = () => {
       </header>
 
       <AlertMessage message={walletError || error} variant="error" />
+      {lastRealtimeEvent?.message && (
+        <AlertMessage message={lastRealtimeEvent.message} variant="success" />
+      )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="border-border bg-card text-card-foreground relative overflow-hidden rounded-none border p-6">

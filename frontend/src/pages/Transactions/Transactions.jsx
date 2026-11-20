@@ -27,7 +27,8 @@ function getTodayIso() {
 }
 
 const TransactionsPage = () => {
-  const { activeWallet, loadingWallets, canEdit } = useOutletContext();
+  const { activeWallet, loadingWallets, canEdit, realtimeVersion } =
+    useOutletContext();
 
   const [activeTab, setActiveTab] = useState('transactions');
   const [categories, setCategories] = useState([]);
@@ -178,7 +179,7 @@ const TransactionsPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [loadingWallets, activeWallet, filters]);
+  }, [loadingWallets, activeWallet, filters, realtimeVersion]);
 
   const formatCurrency = (val) =>
     new Intl.NumberFormat('pt-BR', {
