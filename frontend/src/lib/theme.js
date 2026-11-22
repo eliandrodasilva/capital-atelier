@@ -15,7 +15,7 @@ export function getResolvedTheme() {
       return stored;
     }
   } catch {
-    // Ignore storage access errors
+    return getSystemTheme();
   }
   return getSystemTheme();
 }
@@ -31,7 +31,7 @@ export function toggleTheme() {
   try {
     localStorage.setItem(STORAGE_KEY, next);
   } catch {
-    // Ignore storage access errors
+    applyTheme(next);
   }
   applyTheme(next);
   listeners.forEach((listener) => listener(next));

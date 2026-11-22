@@ -91,7 +91,7 @@ export function subscribeWalletEvents(
         }
       }
     } catch {
-      // Connection closed or failed; handled below
+      controller = null;
     }
 
     if (!closed) {

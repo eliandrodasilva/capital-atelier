@@ -36,7 +36,7 @@ const DashboardLayout = () => {
           localStorage.removeItem(STORAGE_KEY);
         }
       } catch {
-        // Ignore storage errors
+        return nextId;
       }
       return nextId;
     });
@@ -112,7 +112,7 @@ const DashboardLayout = () => {
     try {
       localStorage.setItem(STORAGE_KEY, String(numericId));
     } catch {
-      // Ignore storage errors
+      return;
     }
   }, []);
 
