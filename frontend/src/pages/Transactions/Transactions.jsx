@@ -7,9 +7,11 @@ import {
   MinusCircle,
   Loader2,
   X,
+  Sparkles,
 } from 'lucide-react';
 import TransactionService from '@/services/TransactionService';
 import CategoryService from '@/services/CategoryService';
+import AiService from '@/services/AiService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -50,7 +52,6 @@ const TransactionsPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Transaction form state
   const [showTxForm, setShowTxForm] = useState(false);
   const [editingTxId, setEditingTxId] = useState(null);
   const [txForm, setTxForm] = useState({
@@ -61,8 +62,8 @@ const TransactionsPage = () => {
     categoryId: '',
   });
   const [savingTx, setSavingTx] = useState(false);
+  const [suggestingCategory, setSuggestingCategory] = useState(false);
 
-  // Category form state
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [categoryForm, setCategoryForm] = useState({
     name: '',
@@ -76,7 +77,7 @@ const TransactionsPage = () => {
       const res = await CategoryService.list();
       setCategories(res.data || []);
     } catch {
-      // Categories error handled silently unless user opens category tab
+      setCategories([]);
     }
   }, []);
 
@@ -211,6 +212,41 @@ const TransactionsPage = () => {
       categoryId: tx.categoryId ? String(tx.categoryId) : '',
     });
     setShowTxForm(true);
+  };
+
+  const handleSuggestCategory = async () => {
+    if (!activeWallet) return;
+    setError('');
+    setSuccess('');
+
+    if (!txForm.description.trim()) {
+      setError('Digite uma descrição antes de pedir sugestão da IA.');
+      return;
+    }
+
+    setSuggestingCategory(true);
+    try {
+      const res = await AiService.suggestCategory(activeWallet.id, {
+        description: txForm.description.trim(),
+        type: txForm.type,
+      });
+      if (res.data?.categoryId) {
+        setTxForm((prev) => ({
+          ...prev,
+          categoryId: String(res.data.categoryId),
+        }));
+        setSuccess(
+          `Categoria sugerida pela IA: ${res.data.categoryName}. ${res.data.reason || ''}`
+        );
+      }
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          'Não foi possível sugerir a categoria com IA.'
+      );
+    } finally {
+      setSuggestingCategory(false);
+    }
   };
 
   const handleSubmitTx = async (e) => {
@@ -528,7 +564,19 @@ const TransactionsPage = () => {
                   />
                 </div>
 
-                <div className="flex items-center justify-end gap-2 md:col-span-2 lg:col-span-5">
+                <div className="flex flex-wrap items-center justify-end gap-2 md:col-span-2 lg:col-span-5">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={suggestingCategory || !txForm.description.trim()}
+                    onClick={handleSuggestCategory}
+                    className="cursor-pointer"
+                  >
+                    <Sparkles data-icon="inline-start" />
+                    {suggestingCategory
+                      ? 'SUGERINDO...'
+                      : 'SUGERIR CATEGORIA (IA)'}
+                  </Button>
                   <Button
                     type="button"
                     variant="outline"

@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   ArrowLeftRight,
   WalletCards,
+  FileText,
   Settings,
   User,
   LogOut,
@@ -90,6 +91,12 @@ const Sidebar = ({ wallets = [], activeWallet = null, onSelectWallet }) => {
             label="Carteiras"
             active={location.pathname === '/wallets'}
             onClick={() => navigate('/wallets')}
+          />
+          <NavItem
+            icon={<FileText />}
+            label="Relatórios"
+            active={location.pathname === '/reports'}
+            onClick={() => navigate('/reports')}
           />
         </nav>
 
