@@ -7,7 +7,6 @@ import com.capitalatelier.api.service.RealtimeService;
 import com.capitalatelier.api.service.WalletService;
 import com.capitalatelier.api.util.SecurityUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/api/v1/wallets/{walletId}/events")
-@CrossOrigin(origins = "*")
 public class RealtimeController {
 
 	private final RealtimeService realtimeService;
