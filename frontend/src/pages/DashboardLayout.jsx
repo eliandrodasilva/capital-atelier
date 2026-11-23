@@ -23,6 +23,9 @@ const DashboardLayout = () => {
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [realtimeVersion, setRealtimeVersion] = useState(0);
   const [lastRealtimeEvent, setLastRealtimeEvent] = useState(null);
+  const [isOffline, setIsOffline] = useState(
+    typeof navigator !== 'undefined' ? !navigator.onLine : false
+  );
 
   const applyWalletsResult = useCallback((list) => {
     setWallets(list);
@@ -117,6 +120,19 @@ const DashboardLayout = () => {
   }, []);
 
   useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!token || !activeWalletId) return;
 
     const unsubscribe = subscribeWalletEvents(activeWalletId, {
@@ -166,6 +182,12 @@ const DashboardLayout = () => {
         onSelectWallet={selectWallet}
       />
       <main className="flex-1 overflow-y-auto p-8">
+        {isOffline && (
+          <div className="border-foreground bg-muted text-foreground mb-6 border p-3 text-center text-sm">
+            Modo offline — exibindo interface em cache. Reconecte-se para
+            sincronizar dados.
+          </div>
+        )}
         <Outlet context={walletOutletContext} />
       </main>
     </div>
