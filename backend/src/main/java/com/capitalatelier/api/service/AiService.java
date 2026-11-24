@@ -3,9 +3,7 @@ package com.capitalatelier.api.service;
 import com.capitalatelier.api.dto.AiCategorizeRequestDTO;
 import com.capitalatelier.api.dto.AiCategorizeResponseDTO;
 import com.capitalatelier.api.dto.AiInsightResponseDTO;
-import com.capitalatelier.api.dto.CategorySummaryDTO;
 import com.capitalatelier.api.dto.ReportStatementDTO;
-import com.capitalatelier.api.dto.TransactionResponseDTO;
 import com.capitalatelier.api.model.Category;
 import com.capitalatelier.api.model.User;
 import com.capitalatelier.api.model.Wallet;
@@ -160,11 +158,11 @@ public class AiService {
 
 			JsonNode root = objectMapper.readTree(responseBody);
 			JsonNode textNode = root.path("candidates").path(0).path("content").path("parts").path(0).path("text");
-			if (textNode.isMissingNode() || textNode.asText().isBlank()) {
+			if (textNode.isMissingNode() || textNode.asString("").isBlank()) {
 				throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
 						"Resposta vazia retornada pelo provedor de IA.");
 			}
-			return stripCodeFence(textNode.asText());
+			return stripCodeFence(textNode.asString(""));
 		} catch (ResponseStatusException ex) {
 			throw ex;
 		} catch (RestClientException ex) {
@@ -179,17 +177,18 @@ public class AiService {
 	private AiInsightResponseDTO parseInsightResponse(String rawJson) {
 		try {
 			JsonNode node = objectMapper.readTree(rawJson);
-			String summary = node.path("summary").asText("Análise concluída.");
+			String summary = node.path("summary").asString("Análise concluída.");
 			List<String> highlights = new ArrayList<>();
 			JsonNode highlightsNode = node.path("highlights");
 			if (highlightsNode.isArray()) {
 				for (JsonNode item : highlightsNode) {
-					if (!item.asText().isBlank()) {
-						highlights.add(item.asText());
+					String text = item.asString("");
+					if (!text.isBlank()) {
+						highlights.add(text);
 					}
 				}
 			}
-			String recommendation = node.path("recommendation").asText("");
+			String recommendation = node.path("recommendation").asString("");
 			return new AiInsightResponseDTO(summary, highlights, recommendation, model);
 		} catch (Exception ex) {
 			return new AiInsightResponseDTO(rawJson, List.of(), "", model);
@@ -200,7 +199,7 @@ public class AiService {
 		try {
 			JsonNode node = objectMapper.readTree(rawJson);
 			long suggestedId = node.path("categoryId").asLong(-1L);
-			String reason = node.path("reason").asText("Categoria sugerida com base na descrição.");
+			String reason = node.path("reason").asString("Categoria sugerida com base na descrição.");
 
 			Category matched = categories.stream()
 					.filter(c -> c.getId().equals(suggestedId))
