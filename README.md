@@ -59,6 +59,8 @@ Na primeira inicialização do backend (com `APP_SEED_ENABLED=true`), o `SuitsDa
 | `MAIL_PORT` | Porta SMTP | `587` |
 | `MAIL_USERNAME` | E-mail remetente SMTP | `seu_email@gmail.com` |
 | `MAIL_PASSWORD` | Senha de aplicativo SMTP | `sua_app_password` |
+| `BREVO_API_KEY` | Chave da API HTTP da Brevo (recomendado no Render Free) | `xkeysib-...` |
+| `BREVO_SENDER_EMAIL` | E-mail remetente verificado na Brevo | `seu_email@gmail.com` |
 | `GEMINI_API_KEY` | Chave gratuita do Google AI Studio (`https://aistudio.google.com/apikey`) | `AIzaSy...` |
 | `GEMINI_API_MODEL` | Modelo Gemini utilizado (opcional) | `gemini-2.5-flash` |
 | `CORS_ALLOWED_ORIGINS` | Origens permitidas separadas por vírgula | `http://localhost:5173,https://capital-atelier.vercel.app` |
