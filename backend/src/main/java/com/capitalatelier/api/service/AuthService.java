@@ -12,6 +12,7 @@ import com.capitalatelier.api.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -34,6 +35,9 @@ public class AuthService {
 	@Autowired
 	private MailSenderService mailSenderService;
 
+	@Value("${app.frontend.url:https://capital-atelier.vercel.app}")
+	private String frontendUrl;
+
 	public RegisterResponseDTO register(RegisterRequestDTO dto) {
 		if (userRepository.findByEmail(dto.email()).isPresent()) {
 			throw new RuntimeException("O email informado já está cadastrado");
@@ -52,6 +56,7 @@ public class AuthService {
 			context.setVariable("email", savedUser.getEmail());
 			context.setVariable("createdAt", savedUser.getCreatedAt());
 			context.setVariable("updatedAt", savedUser.getUpdatedAt());
+			context.setVariable("appUrl", getFrontendBaseUrl() + "/");
 			mailSenderService.sendWelcomeMail(savedUser.getEmail(), "Bem-vindo ao Capital Atelier", "newSignUp",
 					context);
 		} catch (Exception ignored) {
@@ -90,7 +95,7 @@ public class AuthService {
 			tokenRepository.save(resetToken);
 
 			try {
-				String resetLink = "http://localhost:5173/reset-password/" + debugToken;
+				String resetLink = getFrontendBaseUrl() + "/reset-password/" + debugToken;
 				Context context = new Context();
 				context.setVariable("name", user.getUsername());
 				context.setVariable("resetLink", resetLink);
@@ -134,5 +139,12 @@ public class AuthService {
 		}
 
 		throw new RuntimeException("Token inválido ou expirado");
+	}
+
+	private String getFrontendBaseUrl() {
+		if (frontendUrl == null || frontendUrl.isBlank()) {
+			return "https://capital-atelier.vercel.app";
+		}
+		return frontendUrl.endsWith("/") ? frontendUrl.substring(0, frontendUrl.length() - 1) : frontendUrl;
 	}
 }

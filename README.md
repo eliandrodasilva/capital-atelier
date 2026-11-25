@@ -64,6 +64,7 @@ Na primeira inicialização do backend (com `APP_SEED_ENABLED=true`), o `SuitsDa
 | `GEMINI_API_KEY` | Chave gratuita do Google AI Studio (`https://aistudio.google.com/apikey`) | `AIzaSy...` |
 | `GEMINI_API_MODEL` | Modelo Gemini utilizado (opcional) | `gemini-2.5-flash` |
 | `CORS_ALLOWED_ORIGINS` | Origens permitidas separadas por vírgula | `http://localhost:5173,https://capital-atelier.vercel.app` |
+| `FRONTEND_URL` | URL pública do frontend usada nos links de e-mail | `https://capital-atelier.vercel.app` |
 | `APP_SEED_ENABLED` | Habilita o seeder único na inicialização | `true` |
 
 > Para desenvolvimento local, você também pode copiar `backend/src/main/resources/application-secrets-example.properties` para `application-secrets.properties` (ignorado pelo Git).
