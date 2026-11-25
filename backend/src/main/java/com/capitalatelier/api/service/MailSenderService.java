@@ -45,6 +45,9 @@ public class MailSenderService {
 			return;
 		}
 		SimpleMailMessage message = new SimpleMailMessage();
+		if (senderEmail != null && !senderEmail.isBlank()) {
+			message.setFrom(senderEmail);
+		}
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(body);
@@ -62,6 +65,9 @@ public class MailSenderService {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			if (senderEmail != null && !senderEmail.isBlank()) {
+				helper.setFrom(senderEmail);
+			}
 			helper.setTo(to);
 			helper.setSubject(subject);
 			helper.setText(htmlContent, true);
